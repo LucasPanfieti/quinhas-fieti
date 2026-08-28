@@ -13,21 +13,30 @@ const outfit = Outfit({
   variable: "--font-outfit",
 });
 
+const siteUrl = "https://quinhas-fieti.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Quinhas Fieti",
   description:
     "Página oficial de Quinhas Fieti. Ouça Depois da Meia-Noite, Fica e Meu Ourinho Branco.",
-  icons: {
-    icon: "/logo.png",
-    apple: "/logo.png",
+  alternates: {
+    canonical: "/",
   },
   openGraph: {
     title: "Quinhas Fieti",
     description:
       "Ouça Depois da Meia-Noite, Fica e Meu Ourinho Branco — YouTube e YouTube Music agora. O resto das plataformas chega em breve.",
+    url: "/",
+    siteName: "Quinhas Fieti",
     locale: "pt_BR",
     type: "website",
-    images: [{ url: "/logo.png" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Quinhas Fieti",
+    description:
+      "Ouça Depois da Meia-Noite, Fica e Meu Ourinho Branco — YouTube e YouTube Music agora. O resto das plataformas chega em breve.",
   },
 };
 
