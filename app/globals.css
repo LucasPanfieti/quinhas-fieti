@@ -1,26 +1,106 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: #050505;
+  --color-accent: #e10600;
+  --color-muted: #a3a3a3;
+  --font-sans: var(--font-outfit);
+  --font-display: var(--font-bebas);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(4.5rem + env(safe-area-inset-top, 0px));
+  overflow-x: hidden;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #050505;
+  color: #fff;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: rgba(225, 6, 0, 0.22);
+}
+
+a,
+button,
+[role="button"] {
+  touch-action: manipulation;
+}
+
+a,
+a *,
+button,
+button *,
+[role="button"],
+[role="button"] * {
+  cursor: pointer;
+}
+
+.cursor-not-allowed,
+.cursor-not-allowed * {
+  cursor: not-allowed;
+}
+
+.cursor-default,
+.cursor-default * {
+  cursor: default;
+}
+
+.grain {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  opacity: 0.1;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.hero-veil {
+  background:
+    linear-gradient(to bottom, rgba(5, 5, 5, 0.55) 0%, rgba(5, 5, 5, 0.35) 40%, #050505 100%),
+    radial-gradient(ellipse at center, transparent 30%, rgba(5, 5, 5, 0.55) 100%);
+}
+
+.cover-veil {
+  background: linear-gradient(
+    to top,
+    rgba(5, 5, 5, 0.55) 0%,
+    transparent 45%,
+    rgba(225, 6, 0, 0.18) 100%
+  );
+  opacity: 0.55;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.animate-rise-in {
+  animation: rise-in 0.28s ease-out;
+}
+
+::selection {
+  background: #e10600;
+  color: #fff;
 }
