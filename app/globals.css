@@ -104,3 +104,27 @@ button *,
   background: #e10600;
   color: #fff;
 }
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #e10600 #111111;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #e10600;
+  border-radius: 999px;
+  border: 2px solid #050505;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #ff1a12;
+}

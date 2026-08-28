@@ -10,9 +10,20 @@ export function About() {
         <h2 className="mt-2 font-display text-4xl tracking-wide text-white sm:text-6xl">
           {artist.name}
         </h2>
-        <p className="mt-6 text-[15px] leading-7 text-white/60 sm:mt-8 sm:text-lg sm:leading-9">
-          {artist.bio}
-        </p>
+        <div className="mt-6 space-y-5 text-[15px] leading-7 text-white/60 sm:mt-8 sm:space-y-6 sm:text-lg sm:leading-9">
+          {artist.bio.map((paragraph, index) => (
+            <p
+              key={paragraph}
+              className={
+                index === artist.bio.length - 1
+                  ? "font-medium text-white/80"
+                  : undefined
+              }
+            >
+              {paragraph}
+            </p>
+          ))}
+        </div>
       </div>
     </section>
   );
