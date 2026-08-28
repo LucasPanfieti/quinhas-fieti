@@ -29,7 +29,7 @@ export function Hero({ featured, onListen }: HeroProps) {
           <div className="absolute inset-[-14%] rounded-full bg-accent/30 blur-3xl" />
           <div className="relative h-full w-full overflow-hidden rounded-full shadow-[0_0_40px_rgba(225,6,0,0.35)] ring-1 ring-white/15">
             <Image
-              src="/logo.png"
+              src="/logo.webp"
               alt="Quinhas Fieti"
               fill
               sizes="(max-width: 640px) 128px, (max-width: 768px) 176px, 224px"

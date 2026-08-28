@@ -47,7 +47,7 @@ export const tracks: Track[] = [
   {
     id: "depois-da-meia-noite",
     title: "Depois da Meia-Noite",
-    cover: "/covers/depois-da-meia-noite.png",
+    cover: "/covers/depois-da-meia-noite.webp",
     featured: true,
     releaseDate: "2026-09-10",
     youtubeId: "7YV6_TIeEtI",
@@ -56,7 +56,7 @@ export const tracks: Track[] = [
   {
     id: "fica",
     title: "Fica",
-    cover: "/covers/fica.png",
+    cover: "/covers/fica.webp",
     releaseDate: "2026-09-24",
     youtubeId: "60iEM8L4Q58",
     platforms: platforms("60iEM8L4Q58"),
@@ -64,7 +64,7 @@ export const tracks: Track[] = [
   {
     id: "meu-ourinho-branco",
     title: "Meu Ourinho Branco",
-    cover: "/covers/meu-ourinho-branco.png",
+    cover: "/covers/meu-ourinho-branco.webp",
     releaseDate: "2026-10-08",
     youtubeId: "SghuW7_NeyU",
     platforms: platforms("SghuW7_NeyU"),

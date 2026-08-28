@@ -12,7 +12,7 @@ export function Header() {
           aria-label="Quinhas Fieti — início"
         >
           <Image
-            src="/logo.png"
+            src="/logo.webp"
             alt="Quinhas Fieti"
             fill
             sizes="40px"
