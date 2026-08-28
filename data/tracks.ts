@@ -19,6 +19,7 @@ export type Track = {
   featured?: boolean;
   releaseDate?: string;
   youtubeId: string;
+  preview: string;
   platforms: Record<PlatformId, string | null>;
 };
 
@@ -51,6 +52,7 @@ export const tracks: Track[] = [
     featured: true,
     releaseDate: "2026-09-10",
     youtubeId: "7YV6_TIeEtI",
+    preview: "/previews/depois-da-meia-noite.mp3",
     platforms: platforms("7YV6_TIeEtI"),
   },
   {
@@ -59,6 +61,7 @@ export const tracks: Track[] = [
     cover: "/covers/fica.webp",
     releaseDate: "2026-09-24",
     youtubeId: "60iEM8L4Q58",
+    preview: "/previews/fica.mp3",
     platforms: platforms("60iEM8L4Q58"),
   },
   {
@@ -67,6 +70,7 @@ export const tracks: Track[] = [
     cover: "/covers/meu-ourinho-branco.webp",
     releaseDate: "2026-10-08",
     youtubeId: "SghuW7_NeyU",
+    preview: "/previews/meu-ourinho-branco.mp3",
     platforms: platforms("SghuW7_NeyU"),
   },
 ];

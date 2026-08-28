@@ -1,17 +1,27 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { artist } from "@/data/artist";
 import { formatReleaseDate, platformOrder, type Track } from "@/data/tracks";
-import { CloseIcon, PlatformIcon, PlayIcon } from "@/components/icons";
+import { CloseIcon, PauseIcon, PlatformIcon, PlayIcon } from "@/components/icons";
 
 type SmartLinkModalProps = {
   track: Track | null;
+  isPlaying: boolean;
+  onTogglePreview: () => void;
   onClose: () => void;
 };
 
-export function SmartLinkModal({ track, onClose }: SmartLinkModalProps) {
+export function SmartLinkModal({
+  track,
+  isPlaying,
+  onTogglePreview,
+  onClose,
+}: SmartLinkModalProps) {
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
   useEffect(() => {
     if (!track) return;
 
@@ -19,7 +29,7 @@ export function SmartLinkModal({ track, onClose }: SmartLinkModalProps) {
     document.body.style.overflow = "hidden";
 
     function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") onCloseRef.current();
     }
 
     window.addEventListener("keydown", onKey);
@@ -27,7 +37,7 @@ export function SmartLinkModal({ track, onClose }: SmartLinkModalProps) {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKey);
     };
-  }, [track, onClose]);
+  }, [track]);
 
   if (!track) return null;
 
@@ -124,14 +134,26 @@ export function SmartLinkModal({ track, onClose }: SmartLinkModalProps) {
             </div>
 
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4 pb-[max(1.5rem,calc(env(safe-area-inset-bottom)+0.75rem))] sm:px-6 sm:py-5">
+              <button
+                type="button"
+                onClick={onTogglePreview}
+                className="mb-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-accent px-5 text-sm font-semibold text-white shadow-[0_0_28px_rgba(225,6,0,0.4)] transition hover:bg-[#ff1a12]"
+              >
+                {isPlaying ? (
+                  <PauseIcon className="h-4 w-4" />
+                ) : (
+                  <PlayIcon className="h-4 w-4" />
+                )}
+                {isPlaying ? "Pausar preview" : "Ouvir preview"}
+              </button>
+
               {youtubeUrl ? (
                 <a
                   href={youtubeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mb-4 flex min-h-12 items-center justify-center gap-2 rounded-full bg-accent px-5 text-sm font-semibold text-white shadow-[0_0_28px_rgba(225,6,0,0.4)] transition hover:bg-[#ff1a12]"
+                  className="mb-4 flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 text-sm font-semibold text-white transition hover:border-white/40 hover:bg-white/10"
                 >
-                  <PlayIcon className="h-4 w-4" />
                   Assistir no YouTube
                 </a>
               ) : null}

@@ -19,7 +19,9 @@ export function Hero({ featured, onListen }: HeroProps) {
         alt=""
         fill
         priority
-        sizes="100vw"
+        loading="eager"
+        fetchPriority="high"
+        sizes="(max-width: 1920px) 100vw, 1920px"
         className="object-cover object-[center_18%] md:object-center"
       />
       <div className="hero-veil absolute inset-0" />
@@ -31,9 +33,10 @@ export function Hero({ featured, onListen }: HeroProps) {
             <Image
               src="/logo.webp"
               alt="Quinhas Fieti"
-              fill
+              width={224}
+              height={224}
               sizes="(max-width: 640px) 128px, (max-width: 768px) 176px, 224px"
-              className="object-cover"
+              className="h-full w-full object-cover"
               priority
             />
           </div>

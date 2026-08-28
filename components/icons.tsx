@@ -127,6 +127,19 @@ export function PlayIcon(props: IconProps) {
   );
 }
 
+export function PauseIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      className={props.className ?? "h-6 w-6"}
+    >
+      <path d="M7.2 5.4h3.2v13.2H7.2V5.4Zm6.4 0h3.2v13.2h-3.2V5.4Z" />
+    </svg>
+  );
+}
+
 const platformIcons: Record<PlatformId, (props: IconProps) => ReactNode> = {
   youtube: YouTubeIcon,
   youtubeMusic: YouTubeMusicIcon,

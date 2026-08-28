@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { artist } from "@/data/artist";
 import { formatReleaseDate, tracks, type Track } from "@/data/tracks";
@@ -5,9 +7,15 @@ import { PlayIcon } from "@/components/icons";
 
 type DiscographyProps = {
   onSelect: (track: Track) => void;
+  onCoverEnter: (track: Track) => void;
+  onCoverLeave: (track: Track) => void;
 };
 
-export function Discography({ onSelect }: DiscographyProps) {
+export function Discography({
+  onSelect,
+  onCoverEnter,
+  onCoverLeave,
+}: DiscographyProps) {
   return (
     <section
       id="musicas"
@@ -38,6 +46,8 @@ export function Discography({ onSelect }: DiscographyProps) {
             <button
               type="button"
               onClick={() => onSelect(track)}
+              onMouseEnter={() => onCoverEnter(track)}
+              onMouseLeave={() => onCoverLeave(track)}
               className="group w-full cursor-pointer text-left"
             >
               <div className="relative aspect-square overflow-hidden bg-black">
@@ -45,12 +55,12 @@ export function Discography({ onSelect }: DiscographyProps) {
                   src={track.cover}
                   alt={`Capa de ${track.title}`}
                   fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  sizes="(max-width: 640px) calc(100vw - 40px), (max-width: 1024px) 45vw, 380px"
                   className="object-cover transition duration-500 group-hover:scale-[1.04]"
                 />
                 <div className="cover-veil absolute inset-0 transition duration-500 group-hover:opacity-100" />
                 <span className="absolute inset-0 flex items-center justify-center">
-                  <span className="flex size-14 items-center justify-center rounded-full bg-accent text-white opacity-90 shadow-[0_0_30px_rgba(225,6,0,0.55)] transition duration-300 sm:size-14 sm:scale-90 sm:opacity-0 sm:group-hover:scale-100 sm:group-hover:opacity-100">
+                  <span className="flex size-14 items-center justify-center rounded-full bg-accent text-white opacity-90 shadow-[0_0_30px_rgba(225,6,0,0.55)] transition duration-300 sm:scale-90 sm:opacity-0 sm:group-hover:scale-100 sm:group-hover:opacity-100">
                     <PlayIcon className="h-6 w-6 translate-x-px" />
                   </span>
                 </span>

@@ -14,9 +14,10 @@ export function Header() {
           <Image
             src="/logo.webp"
             alt="Quinhas Fieti"
-            fill
+            width={40}
+            height={40}
             sizes="40px"
-            className="object-cover"
+            className="h-full w-full object-cover"
             priority
           />
         </a>
