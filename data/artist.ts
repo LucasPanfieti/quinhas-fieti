@@ -16,14 +16,8 @@ export const artist = {
       genre: "Todas",
       description: "Pop, trap e o resto — o catálogo inteiro num só lugar.",
       href: "https://www.youtube.com/playlist?list=PLPBQzCTSvArw",
+      cover: "/logo.webp",
       featured: true,
-    },
-    {
-      id: "pop",
-      name: "Quinha's Pop",
-      genre: "Pop",
-      description: "Refrões que grudam.",
-      href: "https://www.youtube.com/playlist?list=PLJp7stsEMO8A",
     },
     {
       id: "trap",
@@ -31,6 +25,15 @@ export const artist = {
       genre: "Trap",
       description: "O lado mais pesado.",
       href: "https://www.youtube.com/playlist?list=PLBhfugoWT_4c",
+      cover: "/covers/trap.webp",
+    },
+    {
+      id: "pop",
+      name: "Quinha's Pop",
+      genre: "Pop",
+      description: "Refrões que grudam.",
+      href: "https://www.youtube.com/playlist?list=PLJp7stsEMO8A",
+      cover: "/covers/pop.webp",
     },
   ],
   socials: [

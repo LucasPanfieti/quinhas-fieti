@@ -8,7 +8,7 @@ export function Header() {
       <div className="mx-auto flex h-14 max-w-6xl items-center gap-2 px-4 sm:h-16 sm:gap-4 sm:px-6">
         <a
           href="#topo"
-          className="relative size-9 shrink-0 overflow-hidden rounded-full ring-1 ring-white/20 sm:size-10"
+          className="group relative size-9 shrink-0 overflow-hidden rounded-full ring-1 ring-white/20 sm:size-10"
           aria-label="Quinhas Fieti — início"
         >
           <Image
@@ -17,7 +17,7 @@ export function Header() {
             width={40}
             height={40}
             sizes="40px"
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-110"
             priority
           />
         </a>

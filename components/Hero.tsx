@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { artist } from "@/data/artist";
 import { formatReleaseDate, type Track } from "@/data/tracks";
-import { PlayIcon } from "@/components/icons";
+import { ChevronDownIcon, PlayIcon } from "@/components/icons";
 
 type HeroProps = {
   featured: Track;
@@ -26,17 +26,17 @@ export function Hero({ featured, onListen }: HeroProps) {
       />
       <div className="hero-veil absolute inset-0" />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[calc(5.5rem+env(safe-area-inset-top))] text-center sm:px-6 md:pb-20">
+      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center px-5 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-[calc(5.5rem+env(safe-area-inset-top))] text-center sm:px-6 md:pb-20">
         <div className="relative mb-6 size-28 min-[380px]:size-32 sm:mb-8 sm:size-44 md:size-56">
           <div className="absolute inset-[-14%] rounded-full bg-accent/30 blur-3xl" />
-          <div className="relative h-full w-full overflow-hidden rounded-full shadow-[0_0_40px_rgba(225,6,0,0.35)] ring-1 ring-white/15">
+          <div className="group relative h-full w-full overflow-hidden rounded-full shadow-[0_0_40px_rgba(225,6,0,0.35)] ring-1 ring-white/15">
             <Image
               src="/logo.webp"
               alt="Quinhas Fieti"
               width={224}
               height={224}
               sizes="(max-width: 640px) 128px, (max-width: 768px) 176px, 224px"
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-110"
               priority
             />
           </div>
@@ -76,6 +76,17 @@ export function Hero({ featured, onListen }: HeroProps) {
           </a>
         </div>
       </div>
+
+      <a
+        href="#musicas"
+        className="absolute inset-x-0 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-10 flex flex-col items-center gap-1 text-white/45 transition-colors hover:text-white/70 motion-safe:animate-bounce"
+        aria-label="Ir para as faixas"
+      >
+        <span className="text-[10px] font-medium uppercase tracking-[0.28em]">
+          As faixas
+        </span>
+        <ChevronDownIcon className="h-4 w-4" />
+      </a>
     </section>
   );
 }

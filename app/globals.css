@@ -72,6 +72,24 @@ button *,
   opacity: 0.55;
 }
 
+.track-cover-veil {
+  background: linear-gradient(
+    to top,
+    rgba(5, 5, 5, 0.55) 0%,
+    transparent 45%,
+    color-mix(in srgb, var(--track-accent, #e10600) 22%, transparent) 100%
+  );
+}
+
+.group:hover .track-title {
+  color: var(--track-accent, #e10600);
+}
+
+.group:hover .track-play-btn {
+  background-color: var(--track-accent, #e10600);
+  box-shadow: 0 0 30px color-mix(in srgb, var(--track-accent, #e10600) 55%, transparent);
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;
