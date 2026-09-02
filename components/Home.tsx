@@ -5,6 +5,7 @@ import { featuredTrack, type Track } from "@/data/tracks";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Discography } from "@/components/Discography";
+import { Playlists } from "@/components/Playlists";
 import { SmartLinkModal } from "@/components/SmartLinkModal";
 import { About } from "@/components/About";
 import { Footer } from "@/components/Footer";
@@ -14,22 +15,31 @@ export function Home() {
   const [selected, setSelected] = useState<Track | null>(null);
   const modalTrackId = useRef<string | null>(null);
   const preview = useTrackPreview();
+  const {
+    play,
+    stop,
+    suppressHoverUntilMove,
+    onCoverEnter,
+    onCoverLeave,
+    playingId,
+    toggle,
+  } = preview;
 
   const openPlatforms = useCallback(
     (track: Track) => {
       modalTrackId.current = track.id;
       setSelected(track);
-      preview.play(track);
+      play(track);
     },
-    [preview.play],
+    [play],
   );
 
   const closeModal = useCallback(() => {
     modalTrackId.current = null;
-    preview.suppressHoverUntilMove();
-    preview.stop();
+    suppressHoverUntilMove();
+    stop();
     setSelected(null);
-  }, [preview.stop, preview.suppressHoverUntilMove]);
+  }, [stop, suppressHoverUntilMove]);
 
   return (
     <>
@@ -39,20 +49,21 @@ export function Home() {
         onSelect={openPlatforms}
         onCoverEnter={(track) => {
           if (modalTrackId.current) return;
-          preview.onCoverEnter(track);
+          onCoverEnter(track);
         }}
         onCoverLeave={(track) => {
           if (modalTrackId.current) return;
-          preview.onCoverLeave(track);
+          onCoverLeave(track);
         }}
       />
+      <Playlists />
       <About />
       <Footer />
       <SmartLinkModal
         track={selected}
-        isPlaying={Boolean(selected && preview.playingId === selected.id)}
+        isPlaying={Boolean(selected && playingId === selected.id)}
         onTogglePreview={() => {
-          if (selected) preview.toggle(selected);
+          if (selected) toggle(selected);
         }}
         onClose={closeModal}
       />

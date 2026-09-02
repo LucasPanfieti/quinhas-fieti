@@ -31,12 +31,10 @@ export function Discography({
           </h2>
         </div>
         <a
-          href={artist.playlistUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+          href="#playlists"
           className="py-1 text-sm font-medium text-white/60 underline-offset-4 transition hover:text-white hover:underline"
         >
-          Ouvir todas no YouTube
+          Ver playlists
         </a>
       </div>
 

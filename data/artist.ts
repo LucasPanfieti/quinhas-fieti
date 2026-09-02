@@ -1,6 +1,5 @@
 export const artist = {
   name: "Quinhas Fieti",
-  email: "quinhasfieti@gmail.com",
   tagline: "Ouça agora",
   bio: [
     "Um projeto musical independente, criado para transformar sentimentos, histórias e ideias em música.",
@@ -10,6 +9,30 @@ export const artist = {
     "Quinhas Fieti — música que gruda.",
   ],
   playlistUrl: "https://www.youtube.com/playlist?list=PLPBQzCTSvArw",
+  playlists: [
+    {
+      id: "sounds",
+      name: "Quinha's Sounds",
+      genre: "Todas",
+      description: "Pop, trap e o resto — o catálogo inteiro num só lugar.",
+      href: "https://www.youtube.com/playlist?list=PLPBQzCTSvArw",
+      featured: true,
+    },
+    {
+      id: "pop",
+      name: "Quinha's Pop",
+      genre: "Pop",
+      description: "Refrões que grudam.",
+      href: "https://www.youtube.com/playlist?list=PLJp7stsEMO8A",
+    },
+    {
+      id: "trap",
+      name: "Quinha's Trap",
+      genre: "Trap",
+      description: "O lado mais pesado.",
+      href: "https://www.youtube.com/playlist?list=PLBhfugoWT_4c",
+    },
+  ],
   socials: [
     {
       id: "youtube" as const,
@@ -30,11 +53,6 @@ export const artist = {
       id: "spotify" as const,
       label: "Spotify",
       href: null,
-    },
-    {
-      id: "email" as const,
-      label: "E-mail",
-      href: "mailto:quinhasfieti@gmail.com",
     },
   ],
 };

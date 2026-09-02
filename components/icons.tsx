@@ -91,14 +91,6 @@ export function TidalIcon(props: IconProps) {
   );
 }
 
-export function EmailIcon(props: IconProps) {
-  return (
-    <Svg {...props}>
-      <path d="M20.4 4.8H3.6A1.8 1.8 0 0 0 1.8 6.6v10.8a1.8 1.8 0 0 0 1.8 1.8h16.8a1.8 1.8 0 0 0 1.8-1.8V6.6a1.8 1.8 0 0 0-1.8-1.8Zm0 2.16-8.16 5.1a.6.6 0 0 1-.64 0L3.6 6.96V6.6h16.8v.36Z" />
-    </Svg>
-  );
-}
-
 export function CloseIcon(props: IconProps) {
   return (
     <svg
@@ -157,7 +149,6 @@ const socialIcons: Record<SocialId, (props: IconProps) => ReactNode> = {
   instagram: InstagramIcon,
   tiktok: TikTokIcon,
   spotify: SpotifyIcon,
-  email: EmailIcon,
 };
 
 export function PlatformIcon({ id, className }: { id: PlatformId; className?: string }) {

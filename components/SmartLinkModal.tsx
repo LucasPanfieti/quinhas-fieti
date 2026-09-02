@@ -13,6 +13,14 @@ type SmartLinkModalProps = {
   onClose: () => void;
 };
 
+function getFocusableElements(container: HTMLElement) {
+  return [
+    ...container.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  ].filter((element) => !element.hasAttribute("disabled"));
+}
+
 export function SmartLinkModal({
   track,
   isPlaying,
@@ -20,22 +28,55 @@ export function SmartLinkModal({
   onClose,
 }: SmartLinkModalProps) {
   const onCloseRef = useRef(onClose);
-  onCloseRef.current = onClose;
+  const panelRef = useRef<HTMLDivElement>(null);
+  const previewButtonRef = useRef<HTMLButtonElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   useEffect(() => {
     if (!track) return;
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
+
+    const focusFrame = window.requestAnimationFrame(() => {
+      previewButtonRef.current?.focus();
+    });
 
     function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape") onCloseRef.current();
+      if (event.key === "Escape") {
+        onCloseRef.current();
+        return;
+      }
+
+      if (event.key !== "Tab" || !panelRef.current) return;
+
+      const focusable = getFocusableElements(panelRef.current);
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+
+      if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      }
     }
 
     window.addEventListener("keydown", onKey);
     return () => {
+      window.cancelAnimationFrame(focusFrame);
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKey);
+      previousFocusRef.current?.focus();
     };
   }, [track]);
 
@@ -52,12 +93,16 @@ export function SmartLinkModal({
     >
       <button
         type="button"
+        tabIndex={-1}
         aria-label="Fechar"
         onClick={onClose}
         className="absolute inset-0 bg-black/75 backdrop-blur-sm animate-fade-in"
       />
 
-      <div className="relative z-10 flex max-h-[min(94dvh,100%)] w-full max-w-3xl flex-col overflow-hidden rounded-t-3xl border border-white/10 bg-[#0a0a0a] shadow-[0_0_80px_rgba(225,6,0,0.18)] animate-rise-in sm:max-h-[85vh] sm:rounded-3xl">
+      <div
+        ref={panelRef}
+        className="relative z-10 flex max-h-[min(94dvh,100%)] w-full max-w-3xl flex-col overflow-hidden rounded-t-3xl border border-white/10 bg-[#0a0a0a] shadow-[0_0_80px_rgba(225,6,0,0.18)] animate-rise-in sm:max-h-[85vh] sm:rounded-3xl"
+      >
         <div className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-white/25 md:hidden" />
 
         <div className="relative isolate md:hidden">
@@ -85,7 +130,7 @@ export function SmartLinkModal({
             </p>
             <h3
               id="smart-link-title"
-              className="mt-1 font-display text-[1.85rem] leading-none tracking-wide text-white"
+              className="mt-1 font-display text-[clamp(1.4rem,7vw,1.85rem)] leading-none tracking-wide text-white"
             >
               {track.title}
             </h3>
@@ -135,6 +180,7 @@ export function SmartLinkModal({
 
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4 pb-[max(1.5rem,calc(env(safe-area-inset-bottom)+0.75rem))] sm:px-6 sm:py-5">
               <button
+                ref={previewButtonRef}
                 type="button"
                 onClick={onTogglePreview}
                 className="mb-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-accent px-5 text-sm font-semibold text-white shadow-[0_0_28px_rgba(225,6,0,0.4)] transition hover:bg-[#ff1a12]"
@@ -152,8 +198,9 @@ export function SmartLinkModal({
                   href={youtubeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mb-4 flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 text-sm font-semibold text-white transition hover:border-white/40 hover:bg-white/10"
+                  className="mb-4 flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 text-sm font-semibold text-white transition hover:border-white/40 hover:bg-white/10 sm:px-5"
                 >
+                  <PlatformIcon id="youtube" className="h-5 w-5 shrink-0" />
                   Assistir no YouTube
                 </a>
               ) : null}
@@ -163,52 +210,54 @@ export function SmartLinkModal({
               </p>
 
               <ul className="space-y-2">
-                {platformOrder.map((platform) => {
-                  const href = track.platforms[platform.id];
-                  const rowClass =
-                    "flex min-h-12 items-center gap-3 rounded-xl border border-white/10 px-3.5";
+                {platformOrder
+                  .filter((platform) => platform.id !== "youtube")
+                  .map((platform) => {
+                    const href = track.platforms[platform.id];
+                    const rowClass =
+                      "flex min-h-12 items-center gap-2.5 rounded-xl border border-white/10 px-3 sm:gap-3 sm:px-3.5";
 
-                  if (href) {
+                    if (href) {
+                      return (
+                        <li key={platform.id}>
+                          <a
+                            href={href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`${rowClass} transition hover:border-accent/70 hover:bg-white/[0.04]`}
+                          >
+                            <PlatformIcon
+                              id={platform.id}
+                              className="h-5 w-5 shrink-0 text-white"
+                            />
+                            <span className="min-w-0 flex-1 truncate text-sm font-medium text-white">
+                              {platform.label}
+                            </span>
+                            <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-accent sm:tracking-[0.22em]">
+                              Ouvir
+                            </span>
+                          </a>
+                        </li>
+                      );
+                    }
+
                     return (
                       <li key={platform.id}>
-                        <a
-                          href={href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`${rowClass} transition hover:border-accent/70 hover:bg-white/[0.04]`}
-                        >
+                        <div className={`${rowClass} cursor-default opacity-45`}>
                           <PlatformIcon
                             id={platform.id}
                             className="h-5 w-5 shrink-0 text-white"
                           />
-                          <span className="flex-1 text-sm font-medium text-white">
+                          <span className="min-w-0 flex-1 truncate text-sm font-medium text-white">
                             {platform.label}
                           </span>
-                          <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-accent">
-                            Ouvir
+                          <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/70 sm:tracking-[0.22em]">
+                            Em breve
                           </span>
-                        </a>
+                        </div>
                       </li>
                     );
-                  }
-
-                  return (
-                    <li key={platform.id}>
-                      <div className={`${rowClass} cursor-default opacity-45`}>
-                        <PlatformIcon
-                          id={platform.id}
-                          className="h-5 w-5 shrink-0 text-white"
-                        />
-                        <span className="flex-1 text-sm font-medium text-white">
-                          {platform.label}
-                        </span>
-                        <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/70">
-                          Em breve
-                        </span>
-                      </div>
-                    </li>
-                  );
-                })}
+                  })}
               </ul>
             </div>
           </div>
