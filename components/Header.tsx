@@ -63,7 +63,7 @@ export function Header() {
           onClick={() => setMenuOpen(false)}
         >
           <Image
-            src="/logo.webp"
+            src="/icone_redondo.webp"
             alt="Quinhas Fieti"
             width={40}
             height={40}
