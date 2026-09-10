@@ -55,7 +55,17 @@ export const tracks: Track[] = [
     youtubeId: "7YV6_TIeEtI",
     preview: "/previews/depois-da-meia-noite.mp3",
     accentColor: "#e10600",
-    platforms: platforms("7YV6_TIeEtI"),
+    platforms: {
+      ...platforms("7YV6_TIeEtI"),
+      spotify: "https://open.spotify.com/track/61rX0ngNmlWfTnRqzi6CwC",
+      appleMusic:
+        "https://music.apple.com/br/album/depois-da-meia-noite/6804056774?i=6804056777",
+      deezer: "https://www.deezer.com/track/4238673912",
+      amazonMusic: "https://music.amazon.com.br/tracks/B0HG3GG8P9",
+      tidal: "https://tidal.com/track/554539022",
+      tiktok: "https://www.tiktok.com/music/Depois-da-Meia-Noite-7676612461164840977",
+      instagram: "https://www.instagram.com/reels/audio/1623949082669772",
+    },
   },
   {
     id: "fica",
@@ -79,4 +89,5 @@ export const tracks: Track[] = [
   },
 ];
 
-export const featuredTrack = tracks.find((track) => track.featured) ?? tracks[0];
+export const featuredTrack =
+  tracks.find((track) => track.featured) ?? tracks[0];

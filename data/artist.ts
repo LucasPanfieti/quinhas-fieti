@@ -55,7 +55,7 @@ export const artist = {
     {
       id: "spotify" as const,
       label: "Spotify",
-      href: null,
+      href: "https://open.spotify.com/artist/1bKQ2NCpp2g5VRAhWeEvVi",
     },
   ],
 };
