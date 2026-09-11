@@ -18,7 +18,7 @@ export type Track = {
   cover: string;
   featured?: boolean;
   releaseDate?: string;
-  youtubeId: string;
+  youtubeId?: string;
   preview: string;
   accentColor: string;
   platforms: Record<PlatformId, string | null>;
@@ -28,13 +28,14 @@ export function formatReleaseDate(iso: string) {
   return new Intl.DateTimeFormat("pt-BR", {
     day: "numeric",
     month: "long",
+    year: "numeric",
   }).format(new Date(`${iso}T12:00:00`));
 }
 
-function platforms(youtubeId: string): Record<PlatformId, string | null> {
+function emptyPlatforms(): Record<PlatformId, string | null> {
   return {
-    youtube: `https://www.youtube.com/watch?v=${youtubeId}`,
-    youtubeMusic: `https://music.youtube.com/watch?v=${youtubeId}`,
+    youtube: null,
+    youtubeMusic: null,
     spotify: null,
     appleMusic: null,
     deezer: null,
@@ -42,6 +43,14 @@ function platforms(youtubeId: string): Record<PlatformId, string | null> {
     tidal: null,
     tiktok: null,
     instagram: null,
+  };
+}
+
+function platforms(youtubeId: string): Record<PlatformId, string | null> {
+  return {
+    ...emptyPlatforms(),
+    youtube: `https://www.youtube.com/watch?v=${youtubeId}`,
+    youtubeMusic: `https://music.youtube.com/watch?v=${youtubeId}`,
   };
 }
 
@@ -86,6 +95,22 @@ export const tracks: Track[] = [
     preview: "/previews/meu-ourinho-branco.mp3",
     accentColor: "#d4a017",
     platforms: platforms("SghuW7_NeyU"),
+  },
+  {
+    id: "linha-invisivel",
+    title: "Linha Invisível",
+    cover: "/covers/linha-invisivel.webp",
+    preview: "/previews/linha-invisivel.mp3",
+    accentColor: "#c026d3",
+    platforms: emptyPlatforms(),
+  },
+  {
+    id: "nao-sai-da-minha-cabeca",
+    title: "Não Sai da Minha Cabeça",
+    cover: "/covers/nao-sai-da-minha-cabeca.webp",
+    preview: "/previews/nao-sai-da-minha-cabeca.mp3",
+    accentColor: "#2563eb",
+    platforms: emptyPlatforms(),
   },
 ];
 

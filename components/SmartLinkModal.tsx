@@ -211,7 +211,7 @@ export function SmartLinkModal({
 
               <ul className="space-y-2">
                 {platformOrder
-                  .filter((platform) => platform.id !== "youtube")
+                  .filter((platform) => !(platform.id === "youtube" && youtubeUrl))
                   .map((platform) => {
                     const href = track.platforms[platform.id];
                     const rowClass =

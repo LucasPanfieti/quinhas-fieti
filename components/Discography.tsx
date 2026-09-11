@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { artist } from "@/data/artist";
 import { formatReleaseDate, tracks, type Track } from "@/data/tracks";
 import { PlayIcon } from "@/components/icons";
 
@@ -71,7 +70,7 @@ export function Discography({
                 <p className="mt-1.5 text-xs uppercase tracking-[0.18em] text-white/40 sm:tracking-[0.24em]">
                   {track.releaseDate
                     ? formatReleaseDate(track.releaseDate)
-                    : artist.name}
+                    : "Em breve"}
                 </p>
               </div>
             </button>
