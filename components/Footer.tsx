@@ -51,9 +51,23 @@ export function Footer() {
           )}
         </div>
 
-        <p className="text-center text-xs tracking-wide text-white/35">
-          © {new Date().getFullYear()} {artist.name}
-        </p>
+        <div className="space-y-2 text-center text-xs tracking-wide text-white/40">
+          <p>
+            <span className="text-white/50">{artist.legalName}</span>
+            <span className="mx-2 text-white/20" aria-hidden="true">
+              ·
+            </span>
+            <a
+              href={`mailto:${artist.email}`}
+              className="text-white/50 transition hover:text-white/75"
+            >
+              {artist.email}
+            </a>
+          </p>
+          <p className="text-white/30">
+            © {new Date().getFullYear()} {artist.name}
+          </p>
+        </div>
       </div>
     </footer>
   );

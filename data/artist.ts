@@ -1,5 +1,7 @@
 export const artist = {
   name: "Quinhas Fieti",
+  legalName: "Lucas Panfieti",
+  email: "quinhasfieti@gmail.com",
   tagline: "Ouça agora",
   bio: [
     "Um projeto musical independente, criado para transformar sentimentos, histórias e ideias em música.",
