@@ -133,6 +133,9 @@ export function SmartLinkModal({
               className="mt-1 font-display text-[clamp(1.4rem,7vw,1.85rem)] leading-none tracking-wide text-white"
             >
               {track.title}
+              {track.version ? (
+                <span className="text-white/35"> ({track.version})</span>
+              ) : null}
             </h3>
             {track.releaseDate ? (
               <p className="mt-1.5 text-[11px] uppercase tracking-[0.2em] text-white/55">
@@ -161,6 +164,9 @@ export function SmartLinkModal({
                 </p>
                 <h3 className="mt-1 font-display text-4xl tracking-wide text-white">
                   {track.title}
+                  {track.version ? (
+                    <span className="text-white/35"> ({track.version})</span>
+                  ) : null}
                 </h3>
                 {track.releaseDate ? (
                   <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-white/35">

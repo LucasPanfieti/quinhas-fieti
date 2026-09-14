@@ -12,9 +12,18 @@ export const platformOrder = [
 
 export type PlatformId = (typeof platformOrder)[number]["id"];
 
+export const genreOrder = [
+  { id: "trap", label: "Trap" },
+  { id: "pop", label: "Pop" },
+] as const;
+
+export type GenreId = (typeof genreOrder)[number]["id"];
+
 export type Track = {
   id: string;
   title: string;
+  version?: string;
+  genre: GenreId;
   cover: string;
   featured?: boolean;
   releaseDate?: string;
@@ -58,6 +67,7 @@ export const tracks: Track[] = [
   {
     id: "depois-da-meia-noite",
     title: "Depois da Meia-Noite",
+    genre: "trap",
     cover: "/covers/depois-da-meia-noite.webp",
     featured: true,
     releaseDate: "2026-09-10",
@@ -79,6 +89,7 @@ export const tracks: Track[] = [
   {
     id: "fica",
     title: "Fica",
+    genre: "pop",
     cover: "/covers/fica.webp",
     releaseDate: "2026-09-24",
     youtubeId: "60iEM8L4Q58",
@@ -89,6 +100,7 @@ export const tracks: Track[] = [
   {
     id: "linha-invisivel",
     title: "Linha Invisível",
+    genre: "trap",
     cover: "/covers/linha-invisivel.webp",
     releaseDate: "2026-10-01",
     preview: "/previews/linha-invisivel.mp3",
@@ -98,6 +110,7 @@ export const tracks: Track[] = [
   {
     id: "meu-ourinho-branco",
     title: "Meu Ourinho Branco",
+    genre: "pop",
     cover: "/covers/meu-ourinho-branco.webp",
     releaseDate: "2026-10-08",
     youtubeId: "SghuW7_NeyU",
@@ -108,13 +121,55 @@ export const tracks: Track[] = [
   {
     id: "nao-sai-da-minha-cabeca",
     title: "Não Sai da Minha Cabeça",
+    genre: "trap",
     cover: "/covers/nao-sai-da-minha-cabeca.webp",
     releaseDate: "2026-10-15",
     preview: "/previews/nao-sai-da-minha-cabeca.mp3",
     accentColor: "#2563eb",
     platforms: emptyPlatforms(),
   },
+  {
+    id: "fica-quinhas-version",
+    title: "Fica",
+    version: "Quinha's Version",
+    genre: "trap",
+    cover: "/covers/fica-quinhas-version.webp",
+    preview: "/previews/fica-quinhas-version.mp3",
+    accentColor: "#e91e8c",
+    platforms: emptyPlatforms(),
+  },
+  {
+    id: "meu-ourinho-branco-quinhas-version",
+    title: "Meu Ourinho Branco",
+    version: "Quinha's Version",
+    genre: "trap",
+    cover: "/covers/meu-ourinho-branco-quinhas-version.webp",
+    preview: "/previews/meu-ourinho-branco-quinhas-version.mp3",
+    accentColor: "#d4a017",
+    platforms: emptyPlatforms(),
+  },
+  {
+    id: "depois-da-meia-noite-quinhas-version",
+    title: "Depois da Meia-Noite",
+    version: "Quinha's Version",
+    genre: "trap",
+    cover: "/covers/depois-da-meia-noite-quinhas-version.webp",
+    preview: "/previews/depois-da-meia-noite-quinhas-version.mp3",
+    accentColor: "#e10600",
+    platforms: emptyPlatforms(),
+  },
 ];
 
 export const featuredTrack =
   tracks.find((track) => track.featured) ?? tracks[0];
+
+function compareReleaseDate(a: Track, b: Track) {
+  if (!a.releaseDate && !b.releaseDate) return 0;
+  if (!a.releaseDate) return 1;
+  if (!b.releaseDate) return -1;
+  return a.releaseDate.localeCompare(b.releaseDate);
+}
+
+export function getTracksByGenre(genre: GenreId) {
+  return tracks.filter((track) => track.genre === genre).sort(compareReleaseDate);
+}
