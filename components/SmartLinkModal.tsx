@@ -100,7 +100,6 @@ export function SmartLinkModal({
 }: SmartLinkModalProps) {
   const onCloseRef = useRef(onClose);
   const panelRef = useRef<HTMLDivElement>(null);
-  const previewButtonRef = useRef<HTMLButtonElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -115,7 +114,14 @@ export function SmartLinkModal({
     previousFocusRef.current = document.activeElement as HTMLElement | null;
 
     const focusFrame = window.requestAnimationFrame(() => {
-      previewButtonRef.current?.focus();
+      const buttons =
+        panelRef.current?.querySelectorAll<HTMLButtonElement>(
+          "[data-preview-btn]",
+        );
+      const visible = [...(buttons ?? [])].find(
+        (button) => button.getClientRects().length > 0,
+      );
+      visible?.focus();
     });
 
     function onKey(event: KeyboardEvent) {
@@ -152,8 +158,6 @@ export function SmartLinkModal({
   }, [track]);
 
   if (!track) return null;
-
-  const youtubeUrl = track.platforms.youtube;
 
   return (
     <div
@@ -232,33 +236,32 @@ export function SmartLinkModal({
           </div>
         </div>
 
-        <div className="grid min-h-0 flex-1 md:grid-cols-[minmax(280px,36%)_1fr]">
-          {/* Desktop: full cover (no crop) + ambient fill */}
-          <div className="relative hidden min-h-[32rem] overflow-hidden md:block">
+        {/* Desktop: cover + identity/preview on top */}
+        <div className="relative hidden shrink-0 md:grid md:grid-cols-[minmax(260px,34%)_1fr]">
+          <div className="relative overflow-hidden border-b border-white/10">
             <div aria-hidden className="absolute inset-0">
               <Image
                 src={track.cover}
                 alt=""
                 fill
-                sizes="320px"
+                sizes="300px"
                 className="scale-125 object-cover opacity-50 blur-3xl"
               />
               <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-[#0a0a0a]/55 to-[#0a0a0a]" />
               <div
                 className="absolute inset-0"
                 style={{
-                  background: `linear-gradient(to right, transparent 40%, #0a0a0a 100%), radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--track-accent, #e10600) 18%, transparent), transparent 65%)`,
+                  background: `linear-gradient(to right, transparent 35%, #0a0a0a 100%), radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--track-accent, #e10600) 18%, transparent), transparent 65%)`,
                 }}
               />
             </div>
-
-            <div className="absolute inset-0 flex items-center justify-center p-7 pr-8">
-              <div className="relative aspect-square w-full max-w-[18.5rem] overflow-hidden rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.55)] ring-1 ring-white/15">
+            <div className="relative flex justify-center p-6 pr-5">
+              <div className="relative aspect-square w-full max-w-[17.5rem] overflow-hidden rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.55)] ring-1 ring-white/15">
                 <Image
                   src={track.cover}
                   alt={`Capa de ${track.title}`}
                   fill
-                  sizes="296px"
+                  sizes="280px"
                   className="object-contain"
                   priority
                 />
@@ -266,16 +269,15 @@ export function SmartLinkModal({
             </div>
           </div>
 
-          <div className="relative flex min-h-0 flex-1 flex-col">
+          <div className="relative flex flex-col gap-5 border-b border-white/10 px-7 py-6">
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-0 hidden md:block"
+              className="pointer-events-none absolute inset-0"
               style={{
                 background: `radial-gradient(ellipse 80% 55% at 0% 0%, color-mix(in srgb, var(--track-accent, #e10600) 14%, transparent), transparent 60%)`,
               }}
             />
-
-            <div className="relative hidden items-start justify-between gap-5 border-b border-white/10 px-7 py-6 md:flex">
+            <div className="relative flex items-start justify-between gap-5">
               <TrackMeta track={track} titleId="smart-link-title-desktop" />
               <button
                 type="button"
@@ -286,94 +288,94 @@ export function SmartLinkModal({
                 <CloseIcon className="h-5 w-5" />
               </button>
             </div>
-
-            <div className="relative min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-1 pb-[max(1.5rem,calc(env(safe-area-inset-bottom)+0.75rem))] sm:px-6 sm:py-5 md:px-7 md:pt-5 md:pb-7">
-              <button
-                ref={previewButtonRef}
-                type="button"
-                onClick={onTogglePreview}
-                className="mb-2.5 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--track-accent,#e10600)] px-5 text-sm font-semibold text-white shadow-[0_0_28px_color-mix(in_srgb,var(--track-accent,#e10600)_40%,transparent)] transition hover:brightness-110 active:scale-[0.99] md:mb-3 md:min-h-[3.25rem] md:text-[0.9375rem]"
-              >
+            <button
+              type="button"
+              data-preview-btn
+              onClick={onTogglePreview}
+              className="relative mt-1 inline-flex min-h-[3.25rem] w-full items-center justify-center rounded-full bg-[var(--track-accent,#e10600)] px-5 text-[0.9375rem] font-semibold leading-none text-white shadow-[0_0_28px_color-mix(in_srgb,var(--track-accent,#e10600)_40%,transparent)] transition hover:brightness-110 active:scale-[0.99]"
+            >
+              <span className="inline-flex items-center gap-2">
                 {isPlaying ? (
-                  <PauseIcon className="h-4 w-4" />
+                  <PauseIcon className="h-4 w-4 shrink-0" />
                 ) : (
-                  <PlayIcon className="h-4 w-4" />
+                  <PlayIcon className="h-4 w-4 shrink-0 translate-x-px" />
                 )}
-                {isPlaying ? "Pausar preview" : "Ouvir preview"}
-              </button>
-
-              {youtubeUrl ? (
-                <a
-                  href={youtubeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mb-4 flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 text-sm font-semibold text-white transition hover:border-white/35 hover:bg-white/[0.08] sm:min-h-12 sm:px-5 md:mb-5 md:min-h-[3.25rem]"
-                >
-                  <PlatformIcon id="youtube" className="h-5 w-5 shrink-0" />
-                  Assistir no YouTube
-                </a>
-              ) : null}
-
-              <p className="mb-2.5 text-[10px] font-medium uppercase tracking-[0.28em] text-white/35 md:mb-3">
-                Ouça nas plataformas
-              </p>
-
-              <ul className="space-y-1.5 md:space-y-2">
-                {platformOrder
-                  .filter(
-                    (platform) => !(platform.id === "youtube" && youtubeUrl),
-                  )
-                  .map((platform) => {
-                    const href = track.platforms[platform.id];
-                    const rowClass =
-                      "flex min-h-11 items-center gap-2.5 rounded-xl border border-white/10 bg-white/[0.02] px-3 sm:min-h-12 sm:gap-3 sm:px-3.5 md:px-4";
-
-                    if (href) {
-                      return (
-                        <li key={platform.id}>
-                          <a
-                            href={href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={`${rowClass} transition hover:border-[color-mix(in_srgb,var(--track-accent,#e10600)_70%,transparent)] hover:bg-white/[0.05] active:scale-[0.995]`}
-                          >
-                            <PlatformIcon
-                              id={platform.id}
-                              className="h-5 w-5 shrink-0 text-white"
-                            />
-                            <span className="min-w-0 flex-1 truncate text-sm font-medium text-white">
-                              {platform.label}
-                            </span>
-                            <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-[color:var(--track-accent,#e10600)] sm:tracking-[0.22em]">
-                              Ouvir
-                            </span>
-                          </a>
-                        </li>
-                      );
-                    }
-
-                    return (
-                      <li key={platform.id}>
-                        <div
-                          className={`${rowClass} cursor-default opacity-40`}
-                        >
-                          <PlatformIcon
-                            id={platform.id}
-                            className="h-5 w-5 shrink-0 text-white"
-                          />
-                          <span className="min-w-0 flex-1 truncate text-sm font-medium text-white">
-                            {platform.label}
-                          </span>
-                          <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/70 sm:tracking-[0.22em]">
-                            Em breve
-                          </span>
-                        </div>
-                      </li>
-                    );
-                  })}
-              </ul>
-            </div>
+                <span>{isPlaying ? "Pausar preview" : "Ouvir preview"}</span>
+              </span>
+            </button>
           </div>
+        </div>
+
+        {/* Actions: full-width under cover on desktop */}
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-1 pb-[max(1.5rem,calc(env(safe-area-inset-bottom)+0.75rem))] sm:px-6 sm:py-5 md:border-t md:border-white/10 md:px-7 md:pt-5 md:pb-7">
+          <button
+            type="button"
+            data-preview-btn
+            onClick={onTogglePreview}
+            className="mb-2.5 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[var(--track-accent,#e10600)] px-5 text-sm font-semibold leading-none text-white shadow-[0_0_28px_color-mix(in_srgb,var(--track-accent,#e10600)_40%,transparent)] transition hover:brightness-110 active:scale-[0.99] md:hidden"
+          >
+            <span className="inline-flex items-center gap-2">
+              {isPlaying ? (
+                <PauseIcon className="h-4 w-4 shrink-0" />
+              ) : (
+                <PlayIcon className="h-4 w-4 shrink-0 translate-x-px" />
+              )}
+              <span>{isPlaying ? "Pausar preview" : "Ouvir preview"}</span>
+            </span>
+          </button>
+
+          <p className="mb-2.5 text-[10px] font-medium uppercase tracking-[0.28em] text-white/35 md:mb-3">
+            Ouça nas plataformas
+          </p>
+
+          <ul className="space-y-1.5 md:grid md:grid-cols-2 md:gap-2 md:space-y-0">
+            {platformOrder.map((platform) => {
+                const href = track.platforms[platform.id];
+                const rowClass =
+                  "flex min-h-11 items-center gap-2.5 rounded-xl border border-white/10 bg-white/[0.02] px-3 sm:min-h-12 sm:gap-3 sm:px-3.5 md:px-4";
+
+                if (href) {
+                  return (
+                    <li key={platform.id}>
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`${rowClass} transition hover:border-[color-mix(in_srgb,var(--track-accent,#e10600)_70%,transparent)] hover:bg-white/[0.05] active:scale-[0.995]`}
+                      >
+                        <PlatformIcon
+                          id={platform.id}
+                          className="h-5 w-5 shrink-0 text-white"
+                        />
+                        <span className="min-w-0 flex-1 truncate text-sm font-medium text-white">
+                          {platform.label}
+                        </span>
+                        <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-[color:var(--track-accent,#e10600)] sm:tracking-[0.22em]">
+                          Ouvir
+                        </span>
+                      </a>
+                    </li>
+                  );
+                }
+
+                return (
+                  <li key={platform.id}>
+                    <div className={`${rowClass} cursor-default opacity-40`}>
+                      <PlatformIcon
+                        id={platform.id}
+                        className="h-5 w-5 shrink-0 text-white"
+                      />
+                      <span className="min-w-0 flex-1 truncate text-sm font-medium text-white">
+                        {platform.label}
+                      </span>
+                      <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/70 sm:tracking-[0.22em]">
+                        Em breve
+                      </span>
+                    </div>
+                  </li>
+                );
+              })}
+          </ul>
         </div>
       </div>
     </div>
