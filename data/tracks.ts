@@ -144,6 +144,7 @@ export const tracks: Track[] = [
     version: "Quinha's Version",
     genre: "trap",
     cover: "/covers/meu-ourinho-branco-quinhas-version.webp",
+    releaseDate: "2026-10-08",
     preview: "/previews/meu-ourinho-branco-quinhas-version.mp3",
     accentColor: "#d4a017",
     platforms: emptyPlatforms(),

@@ -58,8 +58,17 @@ button *,
 
 .hero-veil {
   background:
-    linear-gradient(to bottom, rgba(5, 5, 5, 0.55) 0%, rgba(5, 5, 5, 0.35) 40%, #050505 100%),
-    radial-gradient(ellipse at center, transparent 30%, rgba(5, 5, 5, 0.55) 100%);
+    linear-gradient(
+      to bottom,
+      rgba(5, 5, 5, 0.55) 0%,
+      rgba(5, 5, 5, 0.35) 40%,
+      #050505 100%
+    ),
+    radial-gradient(
+      ellipse at center,
+      transparent 30%,
+      rgba(5, 5, 5, 0.55) 100%
+    );
 }
 
 .cover-veil {
@@ -85,9 +94,81 @@ button *,
   color: var(--track-accent, #e10600);
 }
 
-.group:hover .track-play-btn {
+.track-play-btn {
+  position: relative;
   background-color: var(--track-accent, #e10600);
-  box-shadow: 0 0 30px color-mix(in srgb, var(--track-accent, #e10600) 55%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, white 18%, transparent),
+    0 0 28px color-mix(in srgb, var(--track-accent, #e10600) 55%, transparent);
+}
+
+.group:hover .track-play-btn {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, white 22%, transparent),
+    0 0 36px color-mix(in srgb, var(--track-accent, #e10600) 65%, transparent);
+}
+
+@media (max-width: 639px) {
+  .track-play-btn {
+    animation: play-breathe 2.8s ease-in-out infinite;
+  }
+
+  .track-play-btn::before,
+  .track-play-btn::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: 999px;
+    border: 1.5px solid
+      color-mix(in srgb, var(--track-accent, #e10600) 75%, white);
+    pointer-events: none;
+  }
+
+  .track-play-btn::before {
+    animation: play-ring 2.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+
+  .track-play-btn::after {
+    animation: play-ring 2.8s cubic-bezier(0.22, 1, 0.36, 1) 1.1s infinite;
+  }
+}
+
+@keyframes play-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.05);
+    filter: brightness(1.08);
+  }
+}
+
+@keyframes play-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  70% {
+    opacity: 0.15;
+  }
+  100% {
+    transform: scale(1.85);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track-play-btn {
+    animation: none;
+  }
+
+  .track-play-btn::before,
+  .track-play-btn::after {
+    animation: none;
+    display: none;
+  }
 }
 
 @keyframes fade-in {

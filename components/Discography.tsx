@@ -35,18 +35,20 @@ function TrackCard({
       className="group w-full cursor-pointer text-left"
       style={{ ["--track-accent" as string]: track.accentColor }}
     >
-      <div className="relative aspect-square overflow-hidden bg-black">
-        <Image
-          src={track.cover}
-          alt={`Capa de ${track.title}${track.version ? ` (${track.version})` : ""}`}
-          fill
-          sizes="(max-width: 640px) calc(100vw - 40px), (max-width: 1024px) 45vw, 380px"
-          className="object-cover transition duration-500 group-hover:scale-[1.04]"
-        />
-        <div className="cover-veil track-cover-veil absolute inset-0 transition duration-500 group-hover:opacity-100" />
-        <span className="absolute inset-0 flex items-center justify-center">
-          <span className="track-play-btn flex size-14 items-center justify-center rounded-full bg-accent text-white opacity-90 shadow-[0_0_30px_rgba(225,6,0,0.55)] transition duration-300 sm:scale-90 sm:opacity-0 sm:group-hover:scale-100 sm:group-hover:opacity-100">
-            <PlayIcon className="h-6 w-6 translate-x-px" />
+      <div className="relative aspect-square">
+        <div className="absolute inset-0 overflow-hidden bg-black">
+          <Image
+            src={track.cover}
+            alt={`Capa de ${track.title}${track.version ? ` (${track.version})` : ""}`}
+            fill
+            sizes="(max-width: 640px) calc(100vw - 40px), (max-width: 1024px) 45vw, 380px"
+            className="object-cover transition duration-500 group-hover:scale-[1.04]"
+          />
+          <div className="cover-veil track-cover-veil absolute inset-0 transition duration-500 group-hover:opacity-100" />
+        </div>
+        <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <span className="track-play-btn flex size-14 items-center justify-center rounded-full text-white opacity-90 transition duration-300 sm:scale-90 sm:opacity-0 sm:group-hover:scale-100 sm:group-hover:opacity-100">
+            <PlayIcon className="relative z-10 h-6 w-6 translate-x-px" />
           </span>
         </span>
       </div>
@@ -101,11 +103,11 @@ export function Discography({
 
           return (
             <div key={genre.id}>
-              <div className="mb-6 flex items-end justify-between gap-4 border-b border-white/10 pb-3 sm:mb-8">
-                <h3 className="font-display text-2xl tracking-wide text-white sm:text-3xl">
+              <div className="mb-6 flex items-center justify-between gap-4 border-b border-white/10 pb-3 sm:mb-8">
+                <h3 className="text-xs font-medium uppercase tracking-[0.42em] text-accent sm:text-[0.8125rem] sm:tracking-[0.48em]">
                   {genre.label}
                 </h3>
-                <p className="pb-0.5 text-[11px] uppercase tracking-[0.22em] text-white/35">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-white/35">
                   {genreTracks.length}{" "}
                   {genreTracks.length === 1 ? "faixa" : "faixas"}
                 </p>
