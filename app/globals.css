@@ -46,6 +46,20 @@ button *,
   cursor: default;
 }
 
+.version-tabs {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  touch-action: pan-x;
+}
+
+.version-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.version-tabs [role="tab"] {
+  touch-action: pan-x;
+}
+
 .grain {
   pointer-events: none;
   position: fixed;

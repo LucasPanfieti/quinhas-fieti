@@ -123,6 +123,26 @@ export const tracks: Track[] = [
     platforms: platforms("SghuW7_NeyU"),
   },
   {
+    id: "fica-pop-version",
+    title: "Fica",
+    version: "Versão Pop",
+    genre: "pop",
+    cover: "/covers/fica-pop-version.webp",
+    preview: "/previews/fica-pop-version.mp3",
+    accentColor: "#e91e8c",
+    platforms: emptyPlatforms(),
+  },
+  {
+    id: "meu-ourinho-branco-pop-version",
+    title: "Meu Ourinho Branco",
+    version: "Versão Pop",
+    genre: "pop",
+    cover: "/covers/meu-ourinho-branco-pop-version.webp",
+    preview: "/previews/meu-ourinho-branco-pop-version.mp3",
+    accentColor: "#d4a017",
+    platforms: emptyPlatforms(),
+  },
+  {
     id: "nao-sai-da-minha-cabeca",
     title: "Não Sai da Minha Cabeça",
     genre: "trap",
@@ -175,10 +195,18 @@ function compareReleaseDate(a: Track, b: Track) {
 }
 
 function compareTrackVersions(a: Track, b: Track) {
-  const aOfficial = !a.version;
-  const bOfficial = !b.version;
-  if (aOfficial !== bOfficial) return aOfficial ? -1 : 1;
+  const aRank = versionRank(a);
+  const bRank = versionRank(b);
+  if (aRank !== bRank) return aRank - bRank;
   return compareReleaseDate(a, b);
+}
+
+function versionRank(track: Track) {
+  if (!track.version) return 0;
+  if (track.version === "Versão Pop") return 1;
+  if (track.version === "Versão Pop Alternativa") return 2;
+  if (track.version === "Versão Alternativa") return 3;
+  return 4;
 }
 
 /** Label for version tabs / UI. */

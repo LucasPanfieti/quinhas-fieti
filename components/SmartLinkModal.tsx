@@ -112,7 +112,7 @@ function VersionTabs({
     <div
       role="tablist"
       aria-label="Versões"
-      className="flex shrink-0 gap-1 overflow-x-auto px-4 pb-1 pt-1 md:px-6 md:pt-3"
+      className="version-tabs flex shrink-0 gap-1 overflow-x-auto overscroll-x-contain px-4 pb-2 pt-1 md:px-6 md:pb-1 md:pt-3"
     >
       {versions.map((version) => {
         const active = version.id === activeId;
