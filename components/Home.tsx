@@ -65,6 +65,7 @@ export function Home() {
         onTogglePreview={() => {
           if (selected) toggle(selected);
         }}
+        onSelectVersion={openPlatforms}
         onClose={closeModal}
       />
     </>

@@ -67,6 +67,7 @@ export const tracks: Track[] = [
   {
     id: "depois-da-meia-noite",
     title: "Depois da Meia-Noite",
+    version: "Versão Alternativa",
     genre: "trap",
     cover: "/covers/depois-da-meia-noite.webp",
     featured: true,
@@ -82,13 +83,15 @@ export const tracks: Track[] = [
       deezer: "https://www.deezer.com/track/4238673912",
       amazonMusic: "https://music.amazon.com.br/tracks/B0HG3GG8P9",
       tidal: "https://tidal.com/track/554539022",
-      tiktok: "https://www.tiktok.com/music/Depois-da-Meia-Noite-7676612461164840977",
+      tiktok:
+        "https://www.tiktok.com/music/Depois-da-Meia-Noite-7676612461164840977",
       instagram: "https://www.instagram.com/reels/audio/1623949082669772",
     },
   },
   {
     id: "fica",
     title: "Fica",
+    version: "Versão Pop Alternativa",
     genre: "pop",
     cover: "/covers/fica.webp",
     releaseDate: "2026-09-24",
@@ -110,6 +113,7 @@ export const tracks: Track[] = [
   {
     id: "meu-ourinho-branco",
     title: "Meu Ourinho Branco",
+    version: "Versão Pop Alternativa",
     genre: "pop",
     cover: "/covers/meu-ourinho-branco.webp",
     releaseDate: "2026-10-08",
@@ -131,7 +135,6 @@ export const tracks: Track[] = [
   {
     id: "fica-quinhas-version",
     title: "Fica",
-    version: "Quinha's Version",
     genre: "trap",
     cover: "/covers/fica-quinhas-version.webp",
     releaseDate: "2026-10-22",
@@ -142,7 +145,6 @@ export const tracks: Track[] = [
   {
     id: "meu-ourinho-branco-quinhas-version",
     title: "Meu Ourinho Branco",
-    version: "Quinha's Version",
     genre: "trap",
     cover: "/covers/meu-ourinho-branco-quinhas-version.webp",
     releaseDate: "2026-10-08",
@@ -153,7 +155,6 @@ export const tracks: Track[] = [
   {
     id: "depois-da-meia-noite-quinhas-version",
     title: "Depois da Meia-Noite",
-    version: "Quinha's Version",
     genre: "trap",
     cover: "/covers/depois-da-meia-noite-quinhas-version.webp",
     releaseDate: "2026-10-29",
@@ -173,6 +174,27 @@ function compareReleaseDate(a: Track, b: Track) {
   return a.releaseDate.localeCompare(b.releaseDate);
 }
 
+function compareTrackVersions(a: Track, b: Track) {
+  const aOfficial = !a.version;
+  const bOfficial = !b.version;
+  if (aOfficial !== bOfficial) return aOfficial ? -1 : 1;
+  return compareReleaseDate(a, b);
+}
+
+/** Label for version tabs / UI. */
+export function getVersionLabel(track: Track) {
+  return track.version ?? "Oficial";
+}
+
+/** All releases that share a title (official first). */
+export function getTrackVersions(track: Track) {
+  return tracks
+    .filter((item) => item.title === track.title)
+    .sort(compareTrackVersions);
+}
+
 export function getTracksByGenre(genre: GenreId) {
-  return tracks.filter((track) => track.genre === genre).sort(compareReleaseDate);
+  return tracks
+    .filter((track) => track.genre === genre)
+    .sort(compareReleaseDate);
 }

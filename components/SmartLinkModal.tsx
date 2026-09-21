@@ -6,6 +6,8 @@ import { artist } from "@/data/artist";
 import {
   formatReleaseDate,
   genreOrder,
+  getTrackVersions,
+  getVersionLabel,
   platformOrder,
   type Track,
 } from "@/data/tracks";
@@ -20,6 +22,7 @@ type SmartLinkModalProps = {
   track: Track | null;
   isPlaying: boolean;
   onTogglePreview: () => void;
+  onSelectVersion: (track: Track) => void;
   onClose: () => void;
 };
 
@@ -35,10 +38,12 @@ function TrackMeta({
   track,
   titleId,
   compact,
+  showVersion = true,
 }: {
   track: Track;
   titleId?: string;
   compact?: boolean;
+  showVersion?: boolean;
 }) {
   const genreLabel =
     genreOrder.find((genre) => genre.id === track.genre)?.label ?? track.genre;
@@ -63,7 +68,7 @@ function TrackMeta({
         }
       >
         {track.title}
-        {track.version ? (
+        {showVersion && track.version ? (
           <span className="text-white/35"> ({track.version})</span>
         ) : null}
       </h3>
@@ -92,37 +97,95 @@ function TrackMeta({
   );
 }
 
+function VersionTabs({
+  versions,
+  activeId,
+  onSelect,
+}: {
+  versions: Track[];
+  activeId: string;
+  onSelect: (track: Track) => void;
+}) {
+  if (versions.length < 2) return null;
+
+  return (
+    <div
+      role="tablist"
+      aria-label="Versões"
+      className="flex shrink-0 gap-1 overflow-x-auto px-4 pb-1 pt-1 md:px-6 md:pt-3"
+    >
+      {versions.map((version) => {
+        const active = version.id === activeId;
+        return (
+          <button
+            key={version.id}
+            type="button"
+            role="tab"
+            aria-selected={active}
+            onClick={() => onSelect(version)}
+            className={`shrink-0 rounded-full px-3.5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] transition ${
+              active
+                ? "bg-[var(--track-accent,#e10600)] text-white shadow-[0_0_20px_color-mix(in_srgb,var(--track-accent,#e10600)_35%,transparent)]"
+                : "bg-white/[0.04] text-white/55 hover:bg-white/[0.08] hover:text-white/80"
+            }`}
+          >
+            {getVersionLabel(version)}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export function SmartLinkModal({
   track,
   isPlaying,
   onTogglePreview,
+  onSelectVersion,
   onClose,
 }: SmartLinkModalProps) {
   const onCloseRef = useRef(onClose);
   const panelRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
+  const previousOverflowRef = useRef("");
+  const wasOpenRef = useRef(false);
 
   useEffect(() => {
     onCloseRef.current = onClose;
   }, [onClose]);
 
   useEffect(() => {
-    if (!track) return;
+    if (!track) {
+      if (wasOpenRef.current) {
+        wasOpenRef.current = false;
+        document.body.style.overflow = previousOverflowRef.current;
+        previousFocusRef.current?.focus();
+        previousFocusRef.current = null;
+      }
+      return;
+    }
 
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    previousFocusRef.current = document.activeElement as HTMLElement | null;
+    const opening = !wasOpenRef.current;
+    wasOpenRef.current = true;
 
-    const focusFrame = window.requestAnimationFrame(() => {
-      const buttons =
-        panelRef.current?.querySelectorAll<HTMLButtonElement>(
-          "[data-preview-btn]",
-        );
-      const visible = [...(buttons ?? [])].find(
-        (button) => button.getClientRects().length > 0,
-      );
-      visible?.focus();
-    });
+    if (opening) {
+      previousFocusRef.current = document.activeElement as HTMLElement | null;
+      previousOverflowRef.current = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+    }
+
+    const focusFrame = opening
+      ? window.requestAnimationFrame(() => {
+          const buttons =
+            panelRef.current?.querySelectorAll<HTMLButtonElement>(
+              "[data-preview-btn]",
+            );
+          const visible = [...(buttons ?? [])].find(
+            (button) => button.getClientRects().length > 0,
+          );
+          visible?.focus();
+        })
+      : null;
 
     function onKey(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -150,14 +213,15 @@ export function SmartLinkModal({
 
     window.addEventListener("keydown", onKey);
     return () => {
-      window.cancelAnimationFrame(focusFrame);
-      document.body.style.overflow = previousOverflow;
+      if (focusFrame !== null) window.cancelAnimationFrame(focusFrame);
       window.removeEventListener("keydown", onKey);
-      previousFocusRef.current?.focus();
     };
   }, [track]);
 
   if (!track) return null;
+
+  const versions = getTrackVersions(track);
+  const showVersionInTitle = versions.length < 2;
 
   return (
     <div
@@ -181,7 +245,12 @@ export function SmartLinkModal({
       >
         <div className="mx-auto mt-2.5 h-1 w-10 shrink-0 rounded-full bg-white/25 md:hidden" />
 
-        {/* Mobile: identity row — full cover + meta (smart-link pattern) */}
+        <VersionTabs
+          versions={versions}
+          activeId={track.id}
+          onSelect={onSelectVersion}
+        />
+
         <div className="relative isolate shrink-0 md:hidden">
           <div
             aria-hidden
@@ -223,7 +292,12 @@ export function SmartLinkModal({
             </div>
 
             <div className="flex min-w-0 flex-1 items-start gap-2 pt-0.5">
-              <TrackMeta track={track} titleId="smart-link-title" compact />
+              <TrackMeta
+                track={track}
+                titleId="smart-link-title"
+                compact
+                showVersion={showVersionInTitle}
+              />
               <button
                 type="button"
                 onClick={onClose}
@@ -236,7 +310,6 @@ export function SmartLinkModal({
           </div>
         </div>
 
-        {/* Desktop: cover + identity/preview on top */}
         <div className="relative hidden shrink-0 md:grid md:grid-cols-[minmax(260px,34%)_1fr]">
           <div className="relative overflow-hidden border-b border-white/10">
             <div aria-hidden className="absolute inset-0">
@@ -278,7 +351,11 @@ export function SmartLinkModal({
               }}
             />
             <div className="relative flex items-start justify-between gap-5">
-              <TrackMeta track={track} titleId="smart-link-title-desktop" />
+              <TrackMeta
+                track={track}
+                titleId="smart-link-title-desktop"
+                showVersion={showVersionInTitle}
+              />
               <button
                 type="button"
                 onClick={onClose}
@@ -306,7 +383,6 @@ export function SmartLinkModal({
           </div>
         </div>
 
-        {/* Actions: full-width under cover on desktop */}
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-1 pb-[max(1.5rem,calc(env(safe-area-inset-bottom)+0.75rem))] sm:px-6 sm:py-5 md:border-t md:border-white/10 md:px-7 md:pt-5 md:pb-7">
           <button
             type="button"
@@ -330,37 +406,19 @@ export function SmartLinkModal({
 
           <ul className="space-y-1.5 md:grid md:grid-cols-2 md:gap-2 md:space-y-0">
             {platformOrder.map((platform) => {
-                const href = track.platforms[platform.id];
-                const rowClass =
-                  "flex min-h-11 items-center gap-2.5 rounded-xl border border-white/10 bg-white/[0.02] px-3 sm:min-h-12 sm:gap-3 sm:px-3.5 md:px-4";
+              const href = track.platforms[platform.id];
+              const rowClass =
+                "flex min-h-11 items-center gap-2.5 rounded-xl border border-white/10 bg-white/[0.02] px-3 sm:min-h-12 sm:gap-3 sm:px-3.5 md:px-4";
 
-                if (href) {
-                  return (
-                    <li key={platform.id}>
-                      <a
-                        href={href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`${rowClass} transition hover:border-[color-mix(in_srgb,var(--track-accent,#e10600)_70%,transparent)] hover:bg-white/[0.05] active:scale-[0.995]`}
-                      >
-                        <PlatformIcon
-                          id={platform.id}
-                          className="h-5 w-5 shrink-0 text-white"
-                        />
-                        <span className="min-w-0 flex-1 truncate text-sm font-medium text-white">
-                          {platform.label}
-                        </span>
-                        <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-[color:var(--track-accent,#e10600)] sm:tracking-[0.22em]">
-                          Ouvir
-                        </span>
-                      </a>
-                    </li>
-                  );
-                }
-
+              if (href) {
                 return (
                   <li key={platform.id}>
-                    <div className={`${rowClass} cursor-default opacity-40`}>
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`${rowClass} transition hover:border-[color-mix(in_srgb,var(--track-accent,#e10600)_70%,transparent)] hover:bg-white/[0.05] active:scale-[0.995]`}
+                    >
                       <PlatformIcon
                         id={platform.id}
                         className="h-5 w-5 shrink-0 text-white"
@@ -368,13 +426,31 @@ export function SmartLinkModal({
                       <span className="min-w-0 flex-1 truncate text-sm font-medium text-white">
                         {platform.label}
                       </span>
-                      <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/70 sm:tracking-[0.22em]">
-                        Em breve
+                      <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-[color:var(--track-accent,#e10600)] sm:tracking-[0.22em]">
+                        Ouvir
                       </span>
-                    </div>
+                    </a>
                   </li>
                 );
-              })}
+              }
+
+              return (
+                <li key={platform.id}>
+                  <div className={`${rowClass} cursor-default opacity-40`}>
+                    <PlatformIcon
+                      id={platform.id}
+                      className="h-5 w-5 shrink-0 text-white"
+                    />
+                    <span className="min-w-0 flex-1 truncate text-sm font-medium text-white">
+                      {platform.label}
+                    </span>
+                    <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/70 sm:tracking-[0.22em]">
+                      Em breve
+                    </span>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>
