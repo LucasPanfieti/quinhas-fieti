@@ -195,6 +195,24 @@ export const tracks: Track[] = [
 export const featuredTrack =
   tracks.find((track) => track.featured) ?? tracks[0];
 
+/**
+ * Latest released drop (America/Sao_Paulo calendar day).
+ * Same-day ties: featured flag, then later version variants.
+ */
+export function getCurrentDrop(today = new Date()): Track {
+  const todayIso = getTodayIso(today);
+  const released = tracks
+    .filter((track) => track.releaseDate && track.releaseDate <= todayIso)
+    .sort((a, b) => {
+      const byDate = b.releaseDate!.localeCompare(a.releaseDate!);
+      if (byDate !== 0) return byDate;
+      if (a.featured !== b.featured) return a.featured ? -1 : 1;
+      return versionRank(b) - versionRank(a);
+    });
+
+  return released[0] ?? featuredTrack;
+}
+
 function compareReleaseDate(a: Track, b: Track) {
   if (!a.releaseDate && !b.releaseDate) return 0;
   if (!a.releaseDate) return 1;

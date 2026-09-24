@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { featuredTrack, type Track } from "@/data/tracks";
+import { getCurrentDrop, type Track } from "@/data/tracks";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Discography } from "@/components/Discography";
@@ -15,6 +15,7 @@ import { useTrackPreview } from "@/hooks/useTrackPreview";
 export function Home() {
   const [selected, setSelected] = useState<Track | null>(null);
   const modalTrackId = useRef<string | null>(null);
+  const currentDrop = getCurrentDrop();
   const preview = useTrackPreview();
   const {
     play,
@@ -45,7 +46,7 @@ export function Home() {
   return (
     <>
       <Header />
-      <Hero featured={featuredTrack} onListen={() => openPlatforms(featuredTrack)} />
+      <Hero featured={currentDrop} onListen={() => openPlatforms(currentDrop)} />
       <Discography
         onSelect={openPlatforms}
         onCoverEnter={(track) => {
