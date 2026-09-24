@@ -98,7 +98,15 @@ export const tracks: Track[] = [
     youtubeId: "60iEM8L4Q58",
     preview: "/previews/fica.mp3",
     accentColor: "#e91e8c",
-    platforms: platforms("60iEM8L4Q58"),
+    platforms: {
+      ...platforms("60iEM8L4Q58"),
+      spotify: "https://open.spotify.com/track/3hKgOA50LoJeRoPKTwTGUi",
+      appleMusic:
+        "https://music.apple.com/br/album/fica/6804056233?i=6804056235",
+      deezer: "https://www.deezer.com/track/4238673462",
+      amazonMusic: "https://music.amazon.com.br/tracks/B0HG39F3R3",
+      tidal: "https://tidal.com/track/554538950",
+    },
   },
   {
     id: "linha-invisivel",
