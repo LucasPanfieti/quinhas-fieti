@@ -68,7 +68,7 @@ export function ReleaseSchedule({ onSelect }: ReleaseScheduleProps) {
           </p>
         </div>
 
-        <ul className="space-y-2.5 sm:space-y-3">
+        <ul className="grid gap-2.5 sm:gap-3 md:grid-cols-2">
           {schedule.map((track) => {
             const status = statuses.get(track.id) ?? "tba";
             const version = getVersionLabel(track);

@@ -69,10 +69,10 @@ export function Hero({ featured, onListen }: HeroProps) {
             Ouvir agora
           </button>
           <a
-            href="#playlists"
+            href="#agenda"
             className="inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-white/5 px-7 text-sm font-semibold tracking-wide text-white backdrop-blur-sm transition hover:border-white/40 hover:bg-white/10"
           >
-            Ver playlists
+            Ver agenda
           </a>
         </div>
       </div>
