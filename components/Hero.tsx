@@ -1,14 +1,17 @@
 import Image from "next/image";
-import { artist } from "@/data/artist";
-import { formatReleaseDate, getVersionLabel, type Track } from "@/data/tracks";
-import { ChevronDownIcon, PlayIcon } from "@/components/icons";
+import {
+  formatShortReleaseDate,
+  getVersionLabel,
+  type Track,
+} from "@/data/tracks";
+import { ChevronDownIcon } from "@/components/icons";
 
 type HeroProps = {
-  featured: Track;
-  onListen: () => void;
+  recent: Track[];
+  onSelect: (track: Track) => void;
 };
 
-export function Hero({ featured, onListen }: HeroProps) {
+export function Hero({ recent, onSelect }: HeroProps) {
   return (
     <section
       id="topo"
@@ -27,7 +30,7 @@ export function Hero({ featured, onListen }: HeroProps) {
       <div className="hero-veil absolute inset-0" />
 
       <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center px-5 pb-[max(5.75rem,calc(4.5rem+env(safe-area-inset-bottom)))] pt-[calc(5.5rem+env(safe-area-inset-top))] text-center sm:px-6 md:pb-24">
-        <div className="relative mb-5 size-24 min-[380px]:size-28 sm:mb-8 sm:size-44 md:size-56 [@media(max-height:700px)]:mb-4 [@media(max-height:700px)]:size-24 sm:[@media(max-height:700px)]:size-32">
+        <div className="relative mb-6 size-28 min-[380px]:size-32 sm:mb-8 sm:size-44 md:size-56 [@media(max-height:700px)]:mb-4 [@media(max-height:700px)]:size-24 sm:[@media(max-height:700px)]:size-32">
           <div className="absolute inset-[-14%] rounded-full bg-accent/30 blur-3xl" />
           <div className="group relative h-full w-full overflow-hidden rounded-full shadow-[0_0_40px_rgba(225,6,0,0.35)] ring-1 ring-white/15">
             <Image
@@ -35,45 +38,85 @@ export function Hero({ featured, onListen }: HeroProps) {
               alt="Quinhas Fieti"
               width={224}
               height={224}
-              sizes="(max-width: 640px) 112px, (max-width: 768px) 176px, 224px"
+              sizes="(max-width: 640px) 128px, (max-width: 768px) 176px, 224px"
               className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-110"
               priority
             />
           </div>
         </div>
 
-        <p className="font-display text-[clamp(1.6rem,7.5vw,2.35rem)] tracking-[0.18em] text-white sm:text-4xl sm:tracking-[0.42em] [@media(max-height:700px)]:text-[1.55rem]">
-          {artist.tagline}
-        </p>
-        <p className="mt-3 flex max-w-sm flex-col gap-0.5 text-[13px] leading-5 text-white/55 sm:mt-3 sm:max-w-md sm:gap-1 sm:text-base sm:leading-7">
-          <span>Novo drop</span>
-          <span className="text-white/80">{featured.title}</span>
-          {featured.version ? (
-            <span className="text-white/40">{getVersionLabel(featured)}</span>
-          ) : null}
-          {featured.releaseDate ? (
-            <span className="text-white/40">
-              {formatReleaseDate(featured.releaseDate)}
-            </span>
-          ) : null}
+        <p className="font-display text-[clamp(1.35rem,6.5vw,2rem)] tracking-[0.1em] text-white sm:text-[2rem] sm:tracking-[0.2em] [@media(max-height:700px)]:text-[1.25rem]">
+          Últimos lançamentos
         </p>
 
-        <div className="mt-6 flex w-full max-w-sm flex-col gap-3 sm:mt-9 sm:max-w-none sm:flex-row sm:justify-center [@media(max-height:700px)]:mt-5">
-          <button
-            type="button"
-            onClick={onListen}
-            className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-full bg-accent px-7 text-sm font-semibold tracking-wide text-white shadow-[0_0_32px_rgba(225,6,0,0.45)] transition hover:bg-[#ff1a12] hover:shadow-[0_0_40px_rgba(225,6,0,0.6)]"
-          >
-            <PlayIcon className="h-4 w-4" />
-            Ouvir agora
-          </button>
-          <a
-            href="#agenda"
-            className="inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-white/5 px-7 text-sm font-semibold tracking-wide text-white backdrop-blur-sm transition hover:border-white/40 hover:bg-white/10"
-          >
-            Ver agenda
-          </a>
-        </div>
+        {recent.length > 0 ? (
+          <div className="mt-8 w-full max-w-md sm:mt-10 sm:max-w-lg [@media(max-height:700px)]:mt-5">
+            <ul className="space-y-2 sm:space-y-2.5">
+              {recent.map((track, index) => {
+                const isLatest = index === 0;
+                const status = isLatest ? "Novo" : "Disponível";
+
+                return (
+                  <li key={track.id}>
+                    <button
+                      type="button"
+                      onClick={() => onSelect(track)}
+                      style={{ ["--track-accent" as string]: track.accentColor }}
+                      className="group relative flex w-full items-center gap-3 overflow-hidden rounded-2xl border border-white/[0.08] bg-black/25 px-3 py-2.5 text-left backdrop-blur-sm transition duration-300 hover:border-[color-mix(in_srgb,var(--track-accent)_45%,transparent)] hover:bg-[color-mix(in_srgb,var(--track-accent)_8%,rgba(0,0,0,0.35))] min-[380px]:gap-3.5 sm:gap-4 sm:px-3.5 sm:py-3"
+                    >
+                      <span
+                        aria-hidden
+                        className="absolute inset-y-0 left-0 w-[3px] bg-[var(--track-accent)] opacity-70 transition duration-300 group-hover:opacity-100"
+                      />
+
+                      <span className="relative size-11 shrink-0 overflow-hidden rounded-lg bg-black ring-1 ring-white/10 min-[380px]:size-12 sm:size-14">
+                        <Image
+                          src={track.cover}
+                          alt=""
+                          fill
+                          sizes="56px"
+                          className="object-cover transition duration-500 group-hover:scale-[1.04]"
+                          priority={isLatest}
+                        />
+                      </span>
+
+                      <span className="min-w-0 flex-1 pr-1 text-left sm:pr-2">
+                        <span className="block truncate font-display text-[1.15rem] leading-none tracking-wide text-white transition-colors group-hover:text-[var(--track-accent)] min-[380px]:text-[1.25rem] sm:text-xl">
+                          {track.title}
+                        </span>
+                        <span className="mt-1.5 block truncate text-[10px] font-medium uppercase tracking-[0.16em] text-white/40 transition-colors group-hover:text-[color-mix(in_srgb,var(--track-accent)_70%,white)] sm:tracking-[0.18em]">
+                          {getVersionLabel(track)}
+                        </span>
+                        {track.releaseDate ? (
+                          <span className="mt-1 block text-[10px] uppercase tracking-[0.14em] text-white/35 sm:tracking-[0.16em]">
+                            {formatShortReleaseDate(track.releaseDate)}
+                          </span>
+                        ) : null}
+                      </span>
+
+                      <span
+                        className={`w-[4.75rem] shrink-0 self-center text-right text-[10px] font-semibold uppercase leading-tight tracking-[0.14em] transition-colors sm:w-auto sm:text-[11px] sm:tracking-[0.2em] ${
+                          isLatest
+                            ? "text-[var(--track-accent)]"
+                            : "text-white/55 group-hover:text-[var(--track-accent)]"
+                        }`}
+                      >
+                        {status}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <a
+              href="#agenda"
+              className="mt-3 flex min-h-11 w-full cursor-pointer items-center justify-center rounded-2xl border border-white/15 bg-white/[0.04] text-[11px] font-semibold uppercase tracking-[0.22em] text-white/70 transition hover:border-white/30 hover:bg-white/[0.08] hover:text-white"
+            >
+              Ver agenda
+            </a>
+          </div>
+        ) : null}
       </div>
 
       <a

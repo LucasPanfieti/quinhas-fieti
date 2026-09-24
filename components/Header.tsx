@@ -118,42 +118,70 @@ export function Header() {
 
           <button
             type="button"
-            className="flex size-10 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white sm:hidden"
+            className="relative flex size-10 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10 hover:text-white sm:hidden"
             aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
             aria-expanded={menuOpen}
             aria-controls={menuId}
             onClick={() => setMenuOpen((open) => !open)}
           >
-            {menuOpen ? (
-              <CloseIcon className="h-5 w-5" />
-            ) : (
-              <MenuIcon className="h-5 w-5" />
-            )}
+            <MenuIcon
+              className={`absolute h-5 w-5 transition duration-200 ease-out ${
+                menuOpen
+                  ? "scale-75 rotate-90 opacity-0"
+                  : "scale-100 rotate-0 opacity-100"
+              }`}
+            />
+            <CloseIcon
+              className={`absolute h-5 w-5 transition duration-200 ease-out ${
+                menuOpen
+                  ? "scale-100 rotate-0 opacity-100"
+                  : "scale-75 -rotate-90 opacity-0"
+              }`}
+            />
           </button>
         </div>
       </div>
 
-      <nav
-        id={menuId}
-        aria-label="Seções"
-        className={`border-t border-white/10 bg-black/90 sm:hidden ${
-          menuOpen ? "block" : "hidden"
+      <div
+        className={`grid overflow-hidden transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none sm:hidden ${
+          menuOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
         }`}
       >
-        <ul className="mx-auto flex max-w-6xl flex-col px-2 py-2">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                className="flex min-h-12 items-center px-4 text-[12px] font-medium uppercase tracking-[0.22em] text-white/75 transition-colors hover:bg-white/5 hover:text-white"
+        <nav
+          id={menuId}
+          aria-label="Seções"
+          aria-hidden={!menuOpen}
+          inert={!menuOpen ? true : undefined}
+          className={`min-h-0 overflow-hidden bg-black/90 transition-[border-color] duration-300 ${
+            menuOpen ? "border-t border-white/10" : "border-t border-transparent"
+          }`}
+        >
+          <ul className="mx-auto flex max-w-6xl flex-col px-2 py-2">
+            {navLinks.map((link, index) => (
+              <li
+                key={link.href}
+                className={`transition duration-300 ease-out motion-reduce:transition-none ${
+                  menuOpen
+                    ? "translate-y-0 opacity-100"
+                    : "-translate-y-1 opacity-0"
+                }`}
+                style={{
+                  transitionDelay: menuOpen ? `${60 + index * 40}ms` : "0ms",
+                }}
               >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+                <a
+                  href={link.href}
+                  tabIndex={menuOpen ? 0 : -1}
+                  onClick={() => setMenuOpen(false)}
+                  className="flex min-h-12 items-center px-4 text-[12px] font-medium uppercase tracking-[0.22em] text-white/75 transition-colors hover:bg-white/5 hover:text-white"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
     </header>
   );
 }
