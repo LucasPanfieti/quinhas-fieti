@@ -106,6 +106,8 @@ export const tracks: Track[] = [
       deezer: "https://www.deezer.com/track/4238673462",
       amazonMusic: "https://music.amazon.com.br/tracks/B0HG39F3R3",
       tidal: "https://tidal.com/track/554538950",
+      tiktok: "https://www.tiktok.com/music/Fica-7676627402328557585",
+      instagram: "https://www.instagram.com/reels/audio/1729016225048926",
     },
   },
   {
