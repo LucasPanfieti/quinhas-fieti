@@ -89,10 +89,10 @@ export function Discography({
           </h2>
         </div>
         <a
-          href="#playlists"
+          href="#agenda"
           className="py-1 text-sm font-medium text-white/60 underline-offset-4 transition hover:text-white hover:underline"
         >
-          Ver playlists
+          Ver agenda
         </a>
       </div>
 

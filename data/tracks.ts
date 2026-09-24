@@ -234,3 +234,79 @@ export function getTracksByGenre(genre: GenreId) {
     .filter((track) => track.genre === genre)
     .sort(compareReleaseDate);
 }
+
+export type ReleaseStatus = "released" | "upcoming" | "tba";
+export type AgendaStatus = "available" | "next" | "soon" | "tba";
+
+export function formatShortReleaseDate(iso: string) {
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(`${iso}T12:00:00`));
+}
+
+/** Calendar day in America/Sao_Paulo as YYYY-MM-DD. */
+export function getTodayIso(today = new Date()) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(today);
+}
+
+export function getReleaseStatus(
+  track: Track,
+  today = new Date(),
+): ReleaseStatus {
+  if (!track.releaseDate) return "tba";
+  return track.releaseDate <= getTodayIso(today) ? "released" : "upcoming";
+}
+
+/** Full release timeline, dated first then TBA. */
+export function getReleaseSchedule() {
+  return [...tracks].sort(compareReleaseDate);
+}
+
+/**
+ * Agenda labels: only the first future dated release is "next";
+ * later dated ones are "soon"; undated are "tba".
+ */
+export function getAgendaStatuses(today = new Date()) {
+  const schedule = getReleaseSchedule();
+  const statuses = new Map<string, AgendaStatus>();
+  let assignedNext = false;
+
+  for (const track of schedule) {
+    const status = getReleaseStatus(track, today);
+
+    if (status === "released") {
+      statuses.set(track.id, "available");
+      continue;
+    }
+
+    if (status === "tba") {
+      statuses.set(track.id, "tba");
+      continue;
+    }
+
+    if (!assignedNext) {
+      statuses.set(track.id, "next");
+      assignedNext = true;
+    } else {
+      statuses.set(track.id, "soon");
+    }
+  }
+
+  return statuses;
+}
+
+/** Stable first paint (no "today") — avoids SSR/client date mismatches. */
+export function getAgendaStatusesPlaceholder() {
+  const statuses = new Map<string, AgendaStatus>();
+  for (const track of getReleaseSchedule()) {
+    statuses.set(track.id, track.releaseDate ? "soon" : "tba");
+  }
+  return statuses;
+}

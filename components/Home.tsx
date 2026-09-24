@@ -5,6 +5,7 @@ import { featuredTrack, type Track } from "@/data/tracks";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Discography } from "@/components/Discography";
+import { ReleaseSchedule } from "@/components/ReleaseSchedule";
 import { Playlists } from "@/components/Playlists";
 import { SmartLinkModal } from "@/components/SmartLinkModal";
 import { About } from "@/components/About";
@@ -56,6 +57,7 @@ export function Home() {
           onCoverLeave(track);
         }}
       />
+      <ReleaseSchedule onSelect={openPlatforms} />
       <Playlists />
       <About />
       <Footer />

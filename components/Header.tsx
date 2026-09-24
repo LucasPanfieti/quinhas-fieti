@@ -7,6 +7,7 @@ import { CloseIcon, MenuIcon, SocialIcon } from "@/components/icons";
 
 const navLinks = [
   { href: "#musicas", label: "Músicas" },
+  { href: "#agenda", label: "Agenda" },
   { href: "#playlists", label: "Playlists" },
   { href: "#sobre", label: "Sobre" },
 ] as const;
