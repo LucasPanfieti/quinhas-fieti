@@ -19,14 +19,14 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Quinhas Fieti",
   description:
-    "Página oficial de Quinhas Fieti. Ouça Depois da Meia-Noite, Fica e Meu Ourinho Branco.",
+    "Página oficial de Quinhas Fieti. Discografia, lançamentos e links para ouvir nas plataformas.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: "Quinhas Fieti",
     description:
-      "Ouça Depois da Meia-Noite, Fica e Meu Ourinho Branco — YouTube e YouTube Music agora. O resto das plataformas chega em breve.",
+      "Discografia e lançamentos de Quinhas Fieti, com links para ouvir nas plataformas.",
     url: "/",
     siteName: "Quinhas Fieti",
     locale: "pt_BR",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Quinhas Fieti",
     description:
-      "Ouça Depois da Meia-Noite, Fica e Meu Ourinho Branco — YouTube e YouTube Music agora. O resto das plataformas chega em breve.",
+      "Discografia e lançamentos de Quinhas Fieti, com links para ouvir nas plataformas.",
   },
 };
 

@@ -7,7 +7,7 @@ export const artist = {
     "Um projeto musical independente, criado para transformar sentimentos, histórias e ideias em música.",
     "Letras originais escritas por Quinhas Fieti, com produção e ferramentas de inteligência artificial como parte do processo criativo.",
     "Aqui você encontra pop, trap e diferentes sonoridades, sempre buscando criar músicas marcantes, refrões que grudam e uma identidade própria.",
-    "Três faixas pra ouvir agora no YouTube e no YouTube Music. Spotify, Apple Music, Deezer e o resto chegam juntas, no mesmo drop.",
+    "Os lançamentos saem nas principais plataformas de streaming. Os links ficam aqui, faixa por faixa.",
     "Quinhas Fieti — música que gruda.",
   ],
   playlistUrl: "https://www.youtube.com/playlist?list=PLPBQzCTSvArw",

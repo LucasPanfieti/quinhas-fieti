@@ -116,9 +116,20 @@ export const tracks: Track[] = [
     genre: "trap",
     cover: "/covers/linha-invisivel.webp",
     releaseDate: "2026-10-01",
+    youtubeId: "Mrc5j2mnovo",
     preview: "/previews/linha-invisivel.mp3",
     accentColor: "#c026d3",
-    platforms: emptyPlatforms(),
+    platforms: {
+      ...platforms("Mrc5j2mnovo"),
+      spotify: "https://open.spotify.com/track/6HdXwIFU0UXIwVS7nkUvXk",
+      appleMusic:
+        "https://music.apple.com/br/album/linha-invisível-single/6811682644?i=6811682645",
+      deezer: "https://www.deezer.com/track/4284074142",
+      amazonMusic: "https://music.amazon.com.br/tracks/B0HJP7GW4J",
+      tidal: "https://tidal.com/track/560924325",
+      tiktok: "https://www.tiktok.com/music/Linha-Invisível-7685131426731886609",
+      instagram: "https://www.instagram.com/reels/audio/2541941496308882",
+    },
   },
   {
     id: "meu-ourinho-branco",
