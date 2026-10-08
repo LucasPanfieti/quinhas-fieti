@@ -141,7 +141,15 @@ export const tracks: Track[] = [
     youtubeId: "SghuW7_NeyU",
     preview: "/previews/meu-ourinho-branco.mp3",
     accentColor: "#d4a017",
-    platforms: platforms("SghuW7_NeyU"),
+    platforms: {
+      ...platforms("SghuW7_NeyU"),
+      spotify: "https://open.spotify.com/track/0SBnpPLn1beZx1BytByzNH",
+      appleMusic:
+        "https://music.apple.com/br/album/meu-ourinho-branco/6806435436?i=6806435437",
+      deezer: "https://www.deezer.com/track/4252827711",
+      amazonMusic: "https://music.amazon.com.br/tracks/B0HHR2HJPP",
+      tidal: "https://tidal.com/track/556600666",
+    },
   },
   {
     id: "fica-pop-version",
@@ -189,9 +197,19 @@ export const tracks: Track[] = [
     genre: "trap",
     cover: "/covers/meu-ourinho-branco-quinhas-version.webp",
     releaseDate: "2026-10-08",
+    youtubeId: "Remvx0xmARI",
     preview: "/previews/meu-ourinho-branco-quinhas-version.mp3",
     accentColor: "#d4a017",
-    platforms: emptyPlatforms(),
+    platforms: {
+      ...platforms("Remvx0xmARI"),
+      spotify: "https://open.spotify.com/track/2kYgFRG9G5Qhxh9TdxcR2k",
+      appleMusic:
+        "https://music.apple.com/br/album/meu-ourinho-branco/6812445133?i=6812445136",
+      amazonMusic: "https://music.amazon.com.br/tracks/B0HJX2X274",
+      tidal: "https://tidal.com/track/561430489",
+      tiktok: "https://www.tiktok.com/music/Meu-Ourinho-Branco-7685773087485528080",
+      instagram: "https://www.instagram.com/reels/audio/934829662521939",
+    },
   },
   {
     id: "depois-da-meia-noite-quinhas-version",
