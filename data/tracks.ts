@@ -149,6 +149,8 @@ export const tracks: Track[] = [
       deezer: "https://www.deezer.com/track/4252827711",
       amazonMusic: "https://music.amazon.com.br/tracks/B0HHR2HJPP",
       tidal: "https://tidal.com/track/556600666",
+      tiktok: "https://www.tiktok.com/music/Meu-Ourinho-Branco-7679246364145584145",
+      instagram: "https://www.instagram.com/reels/audio/1694447628326112",
     },
   },
   {
