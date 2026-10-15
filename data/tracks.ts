@@ -179,9 +179,21 @@ export const tracks: Track[] = [
     genre: "trap",
     cover: "/covers/nao-sai-da-minha-cabeca.webp",
     releaseDate: "2026-10-15",
+    youtubeId: "3f0PmZV1Rwo",
     preview: "/previews/nao-sai-da-minha-cabeca.mp3",
     accentColor: "#2563eb",
-    platforms: emptyPlatforms(),
+    platforms: {
+      ...platforms("3f0PmZV1Rwo"),
+      spotify: "https://open.spotify.com/track/0ruAg6j3mpg06vem9u79wZ",
+      appleMusic:
+        "https://music.apple.com/br/album/não-sai-da-minha-cabeça/6811681580?i=6811681581",
+      deezer: "https://www.deezer.com/track/4284074022",
+      amazonMusic: "https://music.amazon.com.br/tracks/B0HJP5V8GC",
+      tidal: "https://tidal.com/track/560924310",
+      tiktok:
+        "https://www.tiktok.com/music/Não-Sai-da-Minha-Cabeça-7685108627459409936",
+      instagram: "https://www.instagram.com/reels/audio/1526466322833416",
+    },
   },
   {
     id: "fica-quinhas-version",
