@@ -201,9 +201,20 @@ export const tracks: Track[] = [
     genre: "trap",
     cover: "/covers/fica-quinhas-version.webp",
     releaseDate: "2026-10-22",
+    youtubeId: "CQ5mNTQQRZ0",
     preview: "/previews/fica-quinhas-version.mp3",
     accentColor: "#e91e8c",
-    platforms: emptyPlatforms(),
+    platforms: {
+      ...platforms("CQ5mNTQQRZ0"),
+      spotify: "https://open.spotify.com/track/1h1zHxJV1hWERH47FYXoqJ",
+      appleMusic:
+        "https://music.apple.com/br/album/fica/6813154624?i=6813154625",
+      deezer: "https://www.deezer.com/track/4292117352",
+      amazonMusic: "https://music.amazon.com.br/tracks/B0HK6BJPMW",
+      tidal: "https://tidal.com/track/561944227",
+      tiktok: "https://www.tiktok.com/music/Fica-7686549530880067601",
+      instagram: "https://www.instagram.com/reels/audio/1449723156997747",
+    },
   },
   {
     id: "meu-ourinho-branco-quinhas-version",
