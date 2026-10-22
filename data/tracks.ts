@@ -246,6 +246,15 @@ export const tracks: Track[] = [
     accentColor: "#e10600",
     platforms: emptyPlatforms(),
   },
+  {
+    id: "mais-tempo",
+    title: "Mais Tempo",
+    genre: "trap",
+    cover: "/covers/mais-tempo.webp",
+    preview: "/previews/mais-tempo.mp3",
+    accentColor: "#50C43C",
+    platforms: emptyPlatforms(),
+  },
 ];
 
 export const featuredTrack =
