@@ -268,6 +268,15 @@ export const tracks: Track[] = [
     accentColor: "#50C43C",
     platforms: platforms("q2kMYpGAizI"),
   },
+  {
+    id: "descobri-oque-e-amar-voce",
+    title: "Descobri o que é amar você",
+    genre: "trap",
+    cover: "/covers/descobri-oque-e-amar-voce.webp",
+    preview: "/previews/descobri-oque-e-amar-voce.mp3",
+    accentColor: "#B8BCC4",
+    platforms: emptyPlatforms(),
+  },
 ];
 
 export const featuredTrack =
