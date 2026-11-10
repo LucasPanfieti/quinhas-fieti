@@ -273,6 +273,7 @@ export const tracks: Track[] = [
     title: "O que é amar",
     genre: "trap",
     cover: "/covers/o-que-e-amar.webp",
+    releaseDate: "2026-12-17",
     youtubeId: "YlHPi3E11c0",
     preview: "/previews/o-que-e-amar.mp3",
     accentColor: "#B8BCC4",
