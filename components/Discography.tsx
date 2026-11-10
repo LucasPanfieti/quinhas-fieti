@@ -154,7 +154,7 @@ function GenreRow({
       startScroll: el.scrollLeft,
       moved: false,
     };
-    el.setPointerCapture(event.pointerId);
+    // Capture only after real drag — early capture + tiny jitter was eating clicks.
   };
 
   const onPointerMove = (event: PointerEvent<HTMLUListElement>) => {
@@ -162,10 +162,12 @@ function GenreRow({
     const el = scrollerRef.current;
     if (!drag || !el || drag.pointerId !== event.pointerId) return;
     const delta = event.clientX - drag.startX;
-    if (Math.abs(delta) > 4) drag.moved = true;
-    if (drag.moved) {
-      el.scrollLeft = drag.startScroll - delta;
+    if (!drag.moved) {
+      if (Math.abs(delta) < 12) return;
+      drag.moved = true;
+      el.setPointerCapture(event.pointerId);
     }
+    el.scrollLeft = drag.startScroll - delta;
   };
 
   const endDrag = (event: PointerEvent<HTMLUListElement>) => {
@@ -220,31 +222,41 @@ function GenreRow({
         </ul>
 
         {canPrev ? (
-          <button
-            type="button"
-            aria-label={`Ver faixas anteriores de ${label}`}
-            onClick={() => scrollByPage(-1)}
-            className={`row-edge-control row-edge-control--prev pointer-events-none absolute top-0 left-0 z-10 ${EDGE_WIDTH} ${TILE_HEIGHT} opacity-0 transition-[opacity,background-color] duration-200 ease-out group-hover/row:pointer-events-auto group-hover/row:opacity-100 max-md:hidden`}
+          <div
+            aria-hidden
+            className={`row-edge-control row-edge-control--prev pointer-events-none absolute top-0 left-0 z-10 flex ${EDGE_WIDTH} ${TILE_HEIGHT} items-center justify-start opacity-0 transition-[opacity,background-color] duration-200 ease-out group-hover/row:opacity-100 max-md:hidden`}
           >
-            <RowChevronIcon
-              direction="left"
-              className="row-edge-chevron h-10 w-7 text-white"
-            />
-          </button>
+            <button
+              type="button"
+              aria-label={`Ver faixas anteriores de ${label}`}
+              onClick={() => scrollByPage(-1)}
+              className="pointer-events-none flex h-full w-14 items-center justify-center group-hover/row:pointer-events-auto"
+            >
+              <RowChevronIcon
+                direction="left"
+                className="row-edge-chevron h-10 w-7 text-white"
+              />
+            </button>
+          </div>
         ) : null}
 
         {canNext ? (
-          <button
-            type="button"
-            aria-label={`Ver mais faixas de ${label}`}
-            onClick={() => scrollByPage(1)}
-            className={`row-edge-control row-edge-control--next pointer-events-none absolute top-0 right-0 z-10 ${EDGE_WIDTH} ${TILE_HEIGHT} opacity-0 transition-[opacity,background-color] duration-200 ease-out group-hover/row:pointer-events-auto group-hover/row:opacity-100 max-md:hidden`}
+          <div
+            aria-hidden
+            className={`row-edge-control row-edge-control--next pointer-events-none absolute top-0 right-0 z-10 flex ${EDGE_WIDTH} ${TILE_HEIGHT} items-center justify-end opacity-0 transition-[opacity,background-color] duration-200 ease-out group-hover/row:opacity-100 max-md:hidden`}
           >
-            <RowChevronIcon
-              direction="right"
-              className="row-edge-chevron h-10 w-7 text-white"
-            />
-          </button>
+            <button
+              type="button"
+              aria-label={`Ver mais faixas de ${label}`}
+              onClick={() => scrollByPage(1)}
+              className="pointer-events-none flex h-full w-14 items-center justify-center group-hover/row:pointer-events-auto"
+            >
+              <RowChevronIcon
+                direction="right"
+                className="row-edge-chevron h-10 w-7 text-white"
+              />
+            </button>
+          </div>
         ) : null}
       </div>
     </div>
