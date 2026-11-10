@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import {
   formatShortReleaseDate,
@@ -31,6 +32,7 @@ export function SearchDialog({ open, onClose, onSelect }: SearchDialogProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
+  const [mounted, setMounted] = useState(false);
   const deferredQuery = useDeferredValue(query);
 
   const results = useMemo(
@@ -102,9 +104,13 @@ export function SearchDialog({ open, onClose, onSelect }: SearchDialogProps) {
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose, onSelect, results, activeIndex]);
 
-  if (!open) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  return (
+  if (!open || !mounted) return null;
+
+  return createPortal(
     <div className="fixed inset-0 z-[60] flex items-start justify-center px-3 pt-[max(4.5rem,calc(env(safe-area-inset-top)+3.5rem))] sm:px-6 sm:pt-[min(18vh,7.5rem)]">
       <button
         type="button"
@@ -140,23 +146,14 @@ export function SearchDialog({ open, onClose, onSelect }: SearchDialogProps) {
             aria-autocomplete="list"
             className="min-w-0 flex-1 bg-transparent text-[15px] text-white outline-none placeholder:text-white/35 sm:text-base"
           />
-          {query ? (
-            <button
-              type="button"
-              aria-label="Limpar busca"
-              onClick={() => {
-                setQuery("");
-                inputRef.current?.focus();
-              }}
-              className="flex size-8 items-center justify-center rounded-full text-white/50 transition hover:bg-white/10 hover:text-white"
-            >
-              <CloseIcon className="h-4 w-4" />
-            </button>
-          ) : (
-            <kbd className="hidden rounded-md border border-white/10 bg-white/[0.03] px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-white/35 sm:inline">
-              Esc
-            </kbd>
-          )}
+          <button
+            type="button"
+            aria-label="Fechar busca"
+            onClick={onClose}
+            className="flex size-8 shrink-0 items-center justify-center rounded-full text-white/55 transition hover:bg-accent/15 hover:text-accent"
+          >
+            <CloseIcon className="h-4 w-4" />
+          </button>
         </div>
 
         <div className="max-h-[min(60vh,28rem)] overflow-y-auto overscroll-contain">
@@ -246,6 +243,7 @@ export function SearchDialog({ open, onClose, onSelect }: SearchDialogProps) {
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
