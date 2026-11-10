@@ -1,3 +1,19 @@
+import { getGenreListCopy, type GenreId } from "@/data/tracks";
+
+export type Playlist = {
+  id: string;
+  name: string;
+  genre: string;
+  description: string;
+  /** YouTube playlist URL — null while the playlist is still being set up. */
+  href: string | null;
+  /** Cover art path — null shows a genre placeholder in the UI. */
+  cover: string | null;
+  featured?: boolean;
+  /** Links a genre playlist to `genreOrder` when applicable. */
+  genreId?: GenreId;
+};
+
 export const artist = {
   name: "Quinhas Fieti",
   legalName: "Lucas Panfieti",
@@ -6,7 +22,7 @@ export const artist = {
   bio: [
     "Um projeto musical independente, criado para transformar sentimentos, histórias e ideias em música.",
     "Letras originais escritas por Quinhas Fieti, com produção e ferramentas de inteligência artificial como parte do processo criativo.",
-    "Aqui você encontra pop, trap e diferentes sonoridades, sempre buscando criar músicas marcantes, refrões que grudam e uma identidade própria.",
+    `Aqui você encontra ${getGenreListCopy()} e diferentes sonoridades, sempre buscando criar músicas marcantes, refrões que grudam e uma identidade própria.`,
     "Os lançamentos saem nas principais plataformas de streaming. Os links ficam aqui, faixa por faixa.",
     "Quinhas Fieti — música que gruda.",
   ],
@@ -16,7 +32,7 @@ export const artist = {
       id: "sounds",
       name: "Quinha's Sounds",
       genre: "Todas",
-      description: "Pop, trap e o resto — o catálogo inteiro num só lugar.",
+      description: `${getGenreListCopy({ capitalize: true })} — o catálogo inteiro num só lugar.`,
       href: "https://www.youtube.com/playlist?list=PLPBQzCTSvArw",
       cover: "/quinhas-sounds.webp",
       featured: true,
@@ -25,19 +41,30 @@ export const artist = {
       id: "trap",
       name: "Quinha's Trap",
       genre: "Trap",
+      genreId: "trap",
       description: "Todas as músicas Trap de Quinhas Fieti",
       href: "https://www.youtube.com/playlist?list=PLBhfugoWT_4c",
-      cover: "/covers/quinhas-trap-capa.webp",
+      cover: "/covers/quinhas-trap-capa-v2.webp",
     },
     {
       id: "pop",
       name: "Quinha's Pop",
       genre: "Pop",
+      genreId: "pop",
       description: "Todas as músicas Pop de Quinhas Fieti",
       href: "https://www.youtube.com/playlist?list=PLJp7stsEMO8A",
-      cover: "/covers/quinhas-pop-capa.webp",
+      cover: "/covers/quinhas-pop-capa-v2.webp",
     },
-  ],
+    {
+      id: "pagode",
+      name: "Quinha's Pagode",
+      genre: "Pagode",
+      genreId: "pagode",
+      description: "Todas as músicas Pagode de Quinhas Fieti",
+      href: null,
+      cover: "/covers/quinhas-pagode-capa-v2.webp",
+    },
+  ] satisfies Playlist[],
   socials: [
     {
       id: "youtube" as const,

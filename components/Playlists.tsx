@@ -1,9 +1,103 @@
 import Image from "next/image";
-import { artist } from "@/data/artist";
+import { artist, type Playlist } from "@/data/artist";
 import { PlayIcon, YouTubeIcon } from "@/components/icons";
 
 const featured = artist.playlists.find((playlist) => playlist.featured);
 const genres = artist.playlists.filter((playlist) => !playlist.featured);
+
+function PlaylistCover({
+  playlist,
+  sizes,
+  fit = "cover",
+}: {
+  playlist: Playlist;
+  sizes: string;
+  /** Genre logos are square — contain on black so 16:9 never crops. */
+  fit?: "cover" | "contain";
+}) {
+  if (playlist.cover) {
+    return (
+      <Image
+        src={playlist.cover}
+        alt={`Capa de ${playlist.name}`}
+        fill
+        sizes={sizes}
+        className={
+          fit === "contain"
+            ? "object-contain transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+            : playlist.cover === "/logo.webp"
+              ? "object-contain p-6 sm:p-8"
+              : "object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+        }
+      />
+    );
+  }
+
+  return (
+    <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_30%_20%,rgba(226,6,0,0.35),transparent_55%),linear-gradient(160deg,#1a0505,#050505)]">
+      <span className="font-display text-4xl tracking-[0.2em] text-white/90 sm:text-5xl">
+        {playlist.genre}
+      </span>
+    </div>
+  );
+}
+
+function GenrePlaylistCard({ playlist }: { playlist: Playlist }) {
+  const ready = Boolean(playlist.href);
+  const className =
+    "group flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] transition hover:border-accent/70 hover:bg-white/[0.05]";
+
+  const body = (
+    <>
+      <div className="relative aspect-[16/9] w-full overflow-hidden bg-black">
+        <PlaylistCover
+          playlist={playlist}
+          sizes="(max-width: 640px) 100vw, 33vw"
+          fit="contain"
+        />
+      </div>
+      <div className="flex flex-1 flex-col justify-between px-5 py-5 sm:px-7 sm:py-6">
+        <div>
+          <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-white/45 transition group-hover:text-accent">
+            {playlist.genre}
+          </p>
+          <h3 className="mt-2 font-display text-[1.75rem] leading-none tracking-wide text-white sm:text-4xl">
+            {playlist.name}
+          </h3>
+          <p className="mt-2 text-sm leading-6 text-white/50">
+            {playlist.description}
+          </p>
+        </div>
+        <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-white/70 transition group-hover:text-white sm:mt-6">
+          <YouTubeIcon className="h-4 w-4 shrink-0" />
+          {ready ? "Abrir playlist" : "Em breve"}
+        </span>
+      </div>
+    </>
+  );
+
+  if (!ready) {
+    return (
+      <div
+        className={`${className} cursor-default opacity-80`}
+        aria-label={`${playlist.name} — em breve`}
+      >
+        {body}
+      </div>
+    );
+  }
+
+  return (
+    <a
+      href={playlist.href!}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={className}
+    >
+      {body}
+    </a>
+  );
+}
 
 export function Playlists() {
   return (
@@ -22,84 +116,46 @@ export function Playlists() {
         </div>
 
         {featured ? (
-          <a
-            href={featured.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative grid overflow-hidden rounded-3xl border border-accent/40 bg-accent/10 shadow-[0_0_60px_rgba(225,6,0,0.12)] transition hover:border-accent hover:bg-accent/20 sm:grid-cols-[220px_1fr]"
-          >
-            <div className="pointer-events-none absolute -right-8 -top-10 size-44 rounded-full bg-accent/25 blur-3xl transition group-hover:bg-accent/40" />
-            <div className="relative aspect-[16/9] bg-black sm:aspect-auto sm:min-h-[13rem]">
-              <Image
-                src={featured.cover}
-                alt={`Capa de ${featured.name}`}
-                fill
-                sizes="(max-width: 640px) 100vw, 220px"
-                className={
-                  featured.cover === "/logo.webp"
-                    ? "object-contain p-6 sm:p-8"
-                    : "object-cover"
-                }
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent sm:bg-gradient-to-r sm:from-transparent sm:via-transparent sm:to-black/20" />
-            </div>
-            <div className="relative flex flex-col justify-between px-5 py-5 sm:px-8 sm:py-8">
-              <div>
-                <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-accent">
-                  {featured.genre}
-                </p>
-                <h3 className="mt-2 font-display text-[2rem] leading-none tracking-wide text-white sm:text-5xl">
-                  {featured.name}
-                </h3>
-                <p className="mt-2 max-w-lg text-sm leading-6 text-white/60 sm:text-[15px]">
-                  {featured.description}
-                </p>
+          featured.href ? (
+            <a
+              href={featured.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative grid overflow-hidden rounded-3xl border border-accent/40 bg-accent/10 shadow-[0_0_60px_rgba(225,6,0,0.12)] transition hover:border-accent hover:bg-accent/20 sm:grid-cols-[220px_1fr]"
+            >
+              <div className="pointer-events-none absolute -right-8 -top-10 size-44 rounded-full bg-accent/25 blur-3xl transition group-hover:bg-accent/40" />
+              <div className="relative aspect-[16/9] bg-black sm:aspect-auto sm:min-h-[13rem]">
+                <PlaylistCover
+                  playlist={featured}
+                  sizes="(max-width: 640px) 100vw, 220px"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent sm:bg-gradient-to-r sm:from-transparent sm:via-transparent sm:to-black/20" />
               </div>
-              <span className="relative mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-accent px-5 text-sm font-semibold text-white shadow-[0_0_24px_rgba(225,6,0,0.4)] transition group-hover:bg-[#ff1a12] sm:mt-6 sm:w-fit">
-                <PlayIcon className="h-4 w-4 shrink-0" />
-                Ouvir no YouTube
-              </span>
-            </div>
-          </a>
+              <div className="relative flex flex-col justify-between px-5 py-5 sm:px-8 sm:py-8">
+                <div>
+                  <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-accent">
+                    {featured.genre}
+                  </p>
+                  <h3 className="mt-2 font-display text-[2rem] leading-none tracking-wide text-white sm:text-5xl">
+                    {featured.name}
+                  </h3>
+                  <p className="mt-2 max-w-lg text-sm leading-6 text-white/60 sm:text-[15px]">
+                    {featured.description}
+                  </p>
+                </div>
+                <span className="relative mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-accent px-5 text-sm font-semibold text-white shadow-[0_0_24px_rgba(225,6,0,0.4)] transition group-hover:bg-[#ff1a12] sm:mt-6 sm:w-fit">
+                  <PlayIcon className="h-4 w-4 shrink-0" />
+                  Ouvir no YouTube
+                </span>
+              </div>
+            </a>
+          ) : null
         ) : null}
 
-        <ul className="mt-3 grid gap-3 sm:mt-4 sm:grid-cols-2 sm:gap-4">
+        <ul className="mt-3 grid gap-3 sm:mt-4 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
           {genres.map((playlist) => (
             <li key={playlist.id}>
-              <a
-                href={playlist.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] transition hover:border-accent/70 hover:bg-white/[0.05]"
-              >
-                <div className="relative aspect-[16/9] w-full overflow-hidden">
-                  <Image
-                    src={playlist.cover}
-                    alt={`Capa de ${playlist.name}`}
-                    fill
-                    sizes="(max-width: 640px) 100vw, 50vw"
-                    className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-                  />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/20 to-transparent" />
-                </div>
-                <div className="flex flex-1 flex-col justify-between px-5 py-5 sm:px-7 sm:py-6">
-                  <div>
-                    <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-white/45 transition group-hover:text-accent">
-                      {playlist.genre}
-                    </p>
-                    <h3 className="mt-2 font-display text-[1.75rem] leading-none tracking-wide text-white sm:text-4xl">
-                      {playlist.name}
-                    </h3>
-                    <p className="mt-2 text-sm leading-6 text-white/50">
-                      {playlist.description}
-                    </p>
-                  </div>
-                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-white/70 transition group-hover:text-white sm:mt-6">
-                    <YouTubeIcon className="h-4 w-4 shrink-0" />
-                    Abrir playlist
-                  </span>
-                </div>
-              </a>
+              <GenrePlaylistCard playlist={playlist} />
             </li>
           ))}
         </ul>
