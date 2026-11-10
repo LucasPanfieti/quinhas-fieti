@@ -45,7 +45,7 @@ export function Home() {
 
   return (
     <>
-      <Header />
+      <Header onSelectTrack={openPlatforms} />
       <Hero recent={recentDrops} onSelect={openPlatforms} />
       <Discography
         onSelect={openPlatforms}

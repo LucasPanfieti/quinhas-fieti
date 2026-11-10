@@ -3,7 +3,14 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Image from "next/image";
 import { artist } from "@/data/artist";
-import { CloseIcon, MenuIcon, SocialIcon } from "@/components/icons";
+import {
+  CloseIcon,
+  MenuIcon,
+  SearchIcon,
+  SocialIcon,
+} from "@/components/icons";
+import { SearchDialog } from "@/components/SearchDialog";
+import type { Track } from "@/data/tracks";
 
 const navLinks = [
   { href: "#musicas", id: "musicas", label: "Músicas" },
@@ -17,8 +24,13 @@ type SectionId = (typeof sectionIds)[number];
 
 const activeSocials = artist.socials.filter((social) => social.href);
 
-export function Header() {
+type HeaderProps = {
+  onSelectTrack: (track: Track) => void;
+};
+
+export function Header({ onSelectTrack }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<SectionId>("topo");
   const menuId = useId();
   const headerRef = useRef<HTMLElement>(null);
@@ -44,6 +56,20 @@ export function Header() {
       window.removeEventListener("pointerdown", onPointerDown);
     };
   }, [menuOpen]);
+
+  useEffect(() => {
+    function onKey(event: KeyboardEvent) {
+      const isMod = event.metaKey || event.ctrlKey;
+      if (isMod && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setMenuOpen(false);
+        setSearchOpen(true);
+      }
+    }
+
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   useEffect(() => {
     function onResize() {
@@ -151,6 +177,24 @@ export function Header() {
         </nav>
 
         <div className="ml-auto flex shrink-0 items-center gap-0.5 sm:gap-1.5">
+          <button
+            type="button"
+            aria-label="Buscar músicas"
+            title="Buscar músicas (Ctrl+K)"
+            aria-expanded={searchOpen}
+            onClick={() => {
+              setMenuOpen(false);
+              setSearchOpen(true);
+            }}
+            className={`flex size-9 items-center justify-center rounded-full transition-colors sm:size-10 ${
+              searchOpen
+                ? "bg-white/10 text-white"
+                : "text-white/75 hover:bg-white/10 hover:text-white"
+            }`}
+          >
+            <SearchIcon className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
+          </button>
+
           {activeSocials.map((social) => (
             <a
               key={social.id}
@@ -252,6 +296,14 @@ export function Header() {
         </nav>
       </div>
 
+      <SearchDialog
+        open={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        onSelect={(track) => {
+          setSearchOpen(false);
+          onSelectTrack(track);
+        }}
+      />
     </header>
   );
 }

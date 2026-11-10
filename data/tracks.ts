@@ -350,6 +350,49 @@ export function getTracksByGenre(genre: GenreId) {
     });
 }
 
+function normalizeSearch(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .toLowerCase()
+    .trim();
+}
+
+/** Local catalog search: title, version, genre. Newest first within score. */
+export function searchTracks(query: string, limit = 12): Track[] {
+  const needle = normalizeSearch(query);
+  if (!needle) return getRecentDrops(Math.min(limit, 6));
+
+  const scored = tracks
+    .map((track) => {
+      const title = normalizeSearch(track.title);
+      const version = normalizeSearch(track.version ?? "oficial");
+      const genre =
+        genreOrder.find((item) => item.id === track.genre)?.label.toLowerCase() ??
+        track.genre;
+      const haystack = `${title} ${version} ${genre}`;
+
+      let score = 0;
+      if (title === needle) score = 100;
+      else if (title.startsWith(needle)) score = 80;
+      else if (title.includes(needle)) score = 60;
+      else if (version.includes(needle)) score = 40;
+      else if (haystack.includes(needle)) score = 25;
+      else return null;
+
+      return { track, score };
+    })
+    .filter((item): item is { track: Track; score: number } => item !== null)
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      const aDate = a.track.releaseDate ?? "";
+      const bDate = b.track.releaseDate ?? "";
+      return bDate.localeCompare(aDate);
+    });
+
+  return scored.slice(0, limit).map((item) => item.track);
+}
+
 export type ReleaseStatus = "released" | "upcoming" | "tba";
 export type AgendaStatus = "available" | "next" | "soon" | "tba";
 

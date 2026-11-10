@@ -121,6 +121,22 @@ export function MenuIcon(props: IconProps) {
   );
 }
 
+export function SearchIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.9"
+      aria-hidden="true"
+      className={props.className ?? "h-5 w-5"}
+    >
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="M16.5 16.5L21 21" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function ChevronDownIcon(props: IconProps) {
   return (
     <svg
@@ -191,52 +207,6 @@ export function RowChevronIcon({
     </svg>
   );
 }
-
-export function PlayIcon(props: IconProps) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-hidden="true"
-      className={props.className ?? "h-6 w-6"}
-    >
-      <path d="M8.4 5.7v12.6L18.6 12 8.4 5.7Z" />
-    </svg>
-  );
-}
-
-export function PauseIcon(props: IconProps) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-hidden="true"
-      className={props.className ?? "h-6 w-6"}
-    >
-      <path d="M7.2 5.4h3.2v13.2H7.2V5.4Zm6.4 0h3.2v13.2h-3.2V5.4Z" />
-    </svg>
-  );
-}
-
-const platformIcons: Record<PlatformId, (props: IconProps) => ReactNode> = {
-  youtube: YouTubeIcon,
-  youtubeMusic: YouTubeMusicIcon,
-  spotify: SpotifyIcon,
-  appleMusic: AppleMusicIcon,
-  deezer: DeezerIcon,
-  amazonMusic: AmazonMusicIcon,
-  tidal: TidalIcon,
-  tiktok: TikTokIcon,
-  instagram: InstagramIcon,
-};
-
-const socialIcons: Record<SocialId, (props: IconProps) => ReactNode> = {
-  youtube: YouTubeIcon,
-  instagram: InstagramIcon,
-  tiktok: TikTokIcon,
-  spotify: SpotifyIcon,
-};
-
 
 export function PlayIcon(props: IconProps) {
   return (
