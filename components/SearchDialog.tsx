@@ -11,7 +11,7 @@ import {
 import Image from "next/image";
 import {
   formatShortReleaseDate,
-  genreOrder,
+  getGenreLabel,
   getVersionLabel,
   searchTracks,
   type Track,
@@ -177,9 +177,7 @@ export function SearchDialog({ open, onClose, onSelect }: SearchDialogProps) {
             <ul id={listId} role="listbox" className="px-2 py-2 sm:px-3">
               {results.map((track, index) => {
                 const active = index === activeIndex;
-                const genreLabel =
-                  genreOrder.find((genre) => genre.id === track.genre)?.label ??
-                  track.genre;
+                const genreLabel = getGenreLabel(track.genre);
 
                 return (
                   <li key={track.id} role="option" aria-selected={active}>

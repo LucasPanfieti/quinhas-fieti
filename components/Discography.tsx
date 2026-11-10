@@ -278,7 +278,26 @@ export function Discography({
       <div className="space-y-10 sm:space-y-14">
         {genreOrder.map((genre) => {
           const genreTracks = getTracksByGenre(genre.id);
-          if (genreTracks.length === 0) return null;
+
+          if (genreTracks.length === 0) {
+            return (
+              <div key={genre.id} className="px-4 sm:px-5 md:px-6">
+                <div className="mb-4 flex items-end justify-between gap-4 sm:mb-5">
+                  <h3 className="text-xs font-medium uppercase tracking-[0.42em] text-accent sm:text-[0.8125rem] sm:tracking-[0.48em]">
+                    {genre.label}
+                  </h3>
+                  <p className="text-[11px] uppercase tracking-[0.22em] text-white/35">
+                    Em breve
+                  </p>
+                </div>
+                <div className="flex h-28 items-center border border-dashed border-white/12 px-5 sm:h-32 sm:px-6">
+                  <p className="text-sm text-white/40">
+                    Novas faixas de {genre.label} em preparação.
+                  </p>
+                </div>
+              </div>
+            );
+          }
 
           return (
             <GenreRow

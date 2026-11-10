@@ -15,9 +15,24 @@ export type PlatformId = (typeof platformOrder)[number]["id"];
 export const genreOrder = [
   { id: "trap", label: "Trap" },
   { id: "pop", label: "Pop" },
+  { id: "pagode", label: "Pagode" },
 ] as const;
 
 export type GenreId = (typeof genreOrder)[number]["id"];
+
+export function getGenreLabel(genre: GenreId) {
+  return genreOrder.find((item) => item.id === genre)?.label ?? genre;
+}
+
+/** "trap, pop e pagode" — for bios and playlist blurbs. */
+export function getGenreListCopy(options?: { capitalize?: boolean }) {
+  const labels = genreOrder.map((item) =>
+    options?.capitalize ? item.label : item.label.toLowerCase(),
+  );
+  if (labels.length <= 1) return labels[0] ?? "";
+  if (labels.length === 2) return `${labels[0]} e ${labels[1]}`;
+  return `${labels.slice(0, -1).join(", ")} e ${labels[labels.length - 1]}`;
+}
 
 export type Track = {
   id: string;
@@ -321,9 +336,11 @@ function compareTrackVersions(a: Track, b: Track) {
 
 function versionRank(track: Track) {
   if (!track.version) return 0;
-  if (track.version === "Versão Pop") return 1;
-  if (track.version === "Versão Pop Alternativa") return 2;
-  if (track.version === "Versão Alternativa") return 3;
+  const version = track.version.trim().toLowerCase();
+  // Oficial → genre cut ("Versão Pop" / "Versão Pagode") → genre alt → generic alt → other
+  if (version === "versão alternativa") return 3;
+  if (/^versão .+ alternativa$/.test(version)) return 2;
+  if (/^versão .+/.test(version)) return 1;
   return 4;
 }
 
@@ -367,9 +384,7 @@ export function searchTracks(query: string, limit = 12): Track[] {
     .map((track) => {
       const title = normalizeSearch(track.title);
       const version = normalizeSearch(track.version ?? "oficial");
-      const genre =
-        genreOrder.find((item) => item.id === track.genre)?.label.toLowerCase() ??
-        track.genre;
+      const genre = getGenreLabel(track.genre).toLowerCase();
       const haystack = `${title} ${version} ${genre}`;
 
       let score = 0;

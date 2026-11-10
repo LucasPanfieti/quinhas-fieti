@@ -5,7 +5,7 @@ import Image from "next/image";
 import { artist } from "@/data/artist";
 import {
   formatReleaseDate,
-  genreOrder,
+  getGenreLabel,
   getTrackVersions,
   getVersionLabel,
   platformOrder,
@@ -45,8 +45,7 @@ function TrackMeta({
   compact?: boolean;
   showVersion?: boolean;
 }) {
-  const genreLabel =
-    genreOrder.find((genre) => genre.id === track.genre)?.label ?? track.genre;
+  const genreLabel = getGenreLabel(track.genre);
 
   return (
     <div className={compact ? "min-w-0 flex-1 text-left" : "min-w-0 pr-2"}>

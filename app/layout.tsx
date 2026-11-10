@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, Outfit } from "next/font/google";
+import { getGenreListCopy } from "@/data/tracks";
 import "./globals.css";
+
+const genreBlurb = getGenreListCopy();
 
 const bebas = Bebas_Neue({
   weight: "400",
@@ -18,15 +21,13 @@ const siteUrl = "https://quinhas-fieti.vercel.app";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Quinhas Fieti",
-  description:
-    "Página oficial de Quinhas Fieti. Discografia, lançamentos e links para ouvir nas plataformas.",
+  description: `Página oficial de Quinhas Fieti — ${genreBlurb} e lançamentos com links para ouvir nas plataformas.`,
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: "Quinhas Fieti",
-    description:
-      "Discografia e lançamentos de Quinhas Fieti, com links para ouvir nas plataformas.",
+    description: `Discografia e lançamentos de Quinhas Fieti em ${genreBlurb}, com links para ouvir nas plataformas.`,
     url: "/",
     siteName: "Quinhas Fieti",
     locale: "pt_BR",
@@ -35,8 +36,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Quinhas Fieti",
-    description:
-      "Discografia e lançamentos de Quinhas Fieti, com links para ouvir nas plataformas.",
+    description: `Discografia e lançamentos de Quinhas Fieti em ${genreBlurb}, com links para ouvir nas plataformas.`,
   },
 };
 
