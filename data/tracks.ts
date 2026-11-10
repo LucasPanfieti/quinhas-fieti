@@ -342,7 +342,12 @@ export function getTrackVersions(track: Track) {
 export function getTracksByGenre(genre: GenreId) {
   return tracks
     .filter((track) => track.genre === genre)
-    .sort(compareReleaseDate);
+    .sort((a, b) => {
+      if (!a.releaseDate && !b.releaseDate) return 0;
+      if (!a.releaseDate) return 1;
+      if (!b.releaseDate) return -1;
+      return b.releaseDate.localeCompare(a.releaseDate);
+    });
 }
 
 export type ReleaseStatus = "released" | "upcoming" | "tba";
