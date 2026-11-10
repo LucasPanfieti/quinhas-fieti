@@ -46,14 +46,92 @@ button *,
   cursor: default;
 }
 
-.version-tabs {
+.version-tabs,
+.row-scroller {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   touch-action: pan-x;
 }
 
-.version-tabs::-webkit-scrollbar {
+.version-tabs::-webkit-scrollbar,
+.row-scroller::-webkit-scrollbar {
   display: none;
+}
+
+.row-scroller {
+  cursor: grab;
+}
+
+.row-scroller:active {
+  cursor: grabbing;
+}
+
+/* Netflix-style row edge: dark panel over the peeking cover + open chevron */
+.row-edge-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: #fff;
+}
+
+.row-edge-control--next {
+  background: linear-gradient(
+    to left,
+    rgba(5, 5, 5, 0.78) 0%,
+    rgba(5, 5, 5, 0.52) 55%,
+    rgba(5, 5, 5, 0) 100%
+  );
+}
+
+.row-edge-control--prev {
+  background: linear-gradient(
+    to right,
+    rgba(5, 5, 5, 0.78) 0%,
+    rgba(5, 5, 5, 0.52) 55%,
+    rgba(5, 5, 5, 0) 100%
+  );
+}
+
+.row-edge-control:hover {
+  background: linear-gradient(
+    to left,
+    rgba(5, 5, 5, 0.92) 0%,
+    rgba(5, 5, 5, 0.68) 58%,
+    rgba(5, 5, 5, 0.08) 100%
+  );
+}
+
+.row-edge-control--prev:hover {
+  background: linear-gradient(
+    to right,
+    rgba(5, 5, 5, 0.92) 0%,
+    rgba(5, 5, 5, 0.68) 58%,
+    rgba(5, 5, 5, 0.08) 100%
+  );
+}
+
+.row-edge-chevron {
+  opacity: 0.92;
+  filter: drop-shadow(0 1px 8px rgba(0, 0, 0, 0.65));
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+.row-edge-control:hover .row-edge-chevron {
+  opacity: 1;
+  transform: scale(1.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row-edge-chevron {
+    transition: none;
+  }
+
+  .row-edge-control:hover .row-edge-chevron {
+    transform: none;
+  }
 }
 
 .version-tabs [role="tab"] {

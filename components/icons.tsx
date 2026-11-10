@@ -136,6 +136,108 @@ export function ChevronDownIcon(props: IconProps) {
   );
 }
 
+export function ChevronLeftIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.25"
+      aria-hidden="true"
+      className={props.className ?? "h-5 w-5"}
+    >
+      <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function ChevronRightIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.25"
+      aria-hidden="true"
+      className={props.className ?? "h-5 w-5"}
+    >
+      <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** Netflix-style row chevron: open angle, light stroke. */
+export function RowChevronIcon({
+  direction,
+  className,
+}: {
+  direction: "left" | "right";
+  className?: string;
+}) {
+  return (
+    <svg
+      viewBox="0 0 24 36"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      aria-hidden="true"
+      className={className ?? "h-9 w-6"}
+    >
+      {direction === "right" ? (
+        <path d="M6 4l12 14L6 32" strokeLinecap="round" strokeLinejoin="round" />
+      ) : (
+        <path d="M18 4L6 18l12 14" strokeLinecap="round" strokeLinejoin="round" />
+      )}
+    </svg>
+  );
+}
+
+export function PlayIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      className={props.className ?? "h-6 w-6"}
+    >
+      <path d="M8.4 5.7v12.6L18.6 12 8.4 5.7Z" />
+    </svg>
+  );
+}
+
+export function PauseIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      className={props.className ?? "h-6 w-6"}
+    >
+      <path d="M7.2 5.4h3.2v13.2H7.2V5.4Zm6.4 0h3.2v13.2h-3.2V5.4Z" />
+    </svg>
+  );
+}
+
+const platformIcons: Record<PlatformId, (props: IconProps) => ReactNode> = {
+  youtube: YouTubeIcon,
+  youtubeMusic: YouTubeMusicIcon,
+  spotify: SpotifyIcon,
+  appleMusic: AppleMusicIcon,
+  deezer: DeezerIcon,
+  amazonMusic: AmazonMusicIcon,
+  tidal: TidalIcon,
+  tiktok: TikTokIcon,
+  instagram: InstagramIcon,
+};
+
+const socialIcons: Record<SocialId, (props: IconProps) => ReactNode> = {
+  youtube: YouTubeIcon,
+  instagram: InstagramIcon,
+  tiktok: TikTokIcon,
+  spotify: SpotifyIcon,
+};
+
+
 export function PlayIcon(props: IconProps) {
   return (
     <svg
