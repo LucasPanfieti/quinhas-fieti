@@ -294,6 +294,16 @@ export const tracks: Track[] = [
     accentColor: "#B8BCC4",
     platforms: platforms("YlHPi3E11c0"),
   },
+  {
+    id: "o-que-e-amar-pagode",
+    title: "O que é amar",
+    version: "Versão Pagode",
+    genre: "pagode",
+    cover: "/covers/o-que-e-amar-pagode-v2.webp",
+    preview: "/previews/o-que-e-amar-pagode.mp3",
+    accentColor: "#F07818",
+    platforms: emptyPlatforms(),
+  },
 ];
 
 export const featuredTrack =
