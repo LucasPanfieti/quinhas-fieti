@@ -12,7 +12,6 @@ function PlaylistCover({
 }: {
   playlist: Playlist;
   sizes: string;
-  /** Genre logos are square — contain on black so 16:9 never crops. */
   fit?: "cover" | "contain";
 }) {
   if (playlist.cover) {
@@ -24,10 +23,8 @@ function PlaylistCover({
         sizes={sizes}
         className={
           fit === "contain"
-            ? "object-contain transition-transform duration-500 ease-out group-hover:scale-[1.02]"
-            : playlist.cover === "/logo.webp"
-              ? "object-contain p-6 sm:p-8"
-              : "object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+            ? "object-contain transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+            : "object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
         }
       />
     );
@@ -42,46 +39,39 @@ function PlaylistCover({
   );
 }
 
-function GenrePlaylistCard({ playlist }: { playlist: Playlist }) {
+function GenrePlaylistTile({ playlist }: { playlist: Playlist }) {
   const ready = Boolean(playlist.href);
   const className =
-    "group flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] transition hover:border-accent/70 hover:bg-white/[0.05]";
+    "group block w-full text-left transition duration-300";
 
   const body = (
     <>
-      <div className="relative aspect-[16/9] w-full overflow-hidden bg-black">
+      <div className="relative aspect-square overflow-hidden bg-black ring-1 ring-white/10 transition duration-300 group-hover:ring-white/25">
         <PlaylistCover
           playlist={playlist}
-          sizes="(max-width: 640px) 100vw, 33vw"
+          sizes="(max-width: 640px) 42vw, (max-width: 1024px) 30vw, 22vw"
           fit="contain"
         />
-      </div>
-      <div className="flex flex-1 flex-col justify-between px-5 py-5 sm:px-7 sm:py-6">
-        <div>
-          <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-white/45 transition group-hover:text-accent">
-            {playlist.genre}
-          </p>
-          <h3 className="mt-2 font-display text-[1.75rem] leading-none tracking-wide text-white sm:text-4xl">
-            {playlist.name}
-          </h3>
-          <p className="mt-2 text-sm leading-6 text-white/50">
-            {playlist.description}
-          </p>
-        </div>
-        <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-white/70 transition group-hover:text-white sm:mt-6">
-          <YouTubeIcon className="h-4 w-4 shrink-0" />
-          {ready ? "Abrir playlist" : "Em breve"}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-80 transition duration-300 group-hover:opacity-100" />
+        <span className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center gap-2 px-3 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/80 sm:px-4 sm:py-3.5">
+          <YouTubeIcon className="h-3.5 w-3.5 shrink-0" />
+          {ready ? "Abrir" : "Em breve"}
         </span>
+      </div>
+      <div className="mt-2.5 sm:mt-3">
+        <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-white/40 transition group-hover:text-accent sm:text-[11px]">
+          {playlist.genre}
+        </p>
+        <h3 className="mt-1 font-display text-[1.35rem] leading-none tracking-wide text-white sm:text-[1.6rem] md:text-[1.75rem]">
+          {playlist.name}
+        </h3>
       </div>
     </>
   );
 
   if (!ready) {
     return (
-      <div
-        className={`${className} cursor-default opacity-80`}
-        aria-label={`${playlist.name} — em breve`}
-      >
+      <div className={`${className} cursor-default opacity-75`} aria-label={`${playlist.name} — em breve`}>
         {body}
       </div>
     );
@@ -101,9 +91,9 @@ function GenrePlaylistCard({ playlist }: { playlist: Playlist }) {
 
 export function Playlists() {
   return (
-    <section id="playlists" className="relative border-t border-white/10">
-      <div className="mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-28">
-        <div className="mb-8 sm:mb-14">
+    <section id="playlists" className="relative border-t border-white/10 py-16 sm:py-28">
+      <div className="mb-10 flex flex-col gap-3 px-4 sm:mb-14 sm:flex-row sm:items-end sm:justify-between sm:gap-4 sm:px-5 md:px-6">
+        <div>
           <p className="text-[11px] font-medium uppercase tracking-[0.38em] text-accent">
             YouTube
           </p>
@@ -114,48 +104,60 @@ export function Playlists() {
             Além do drop: escolhe o clima ou ouve tudo de uma vez.
           </p>
         </div>
+      </div>
 
-        {featured ? (
-          featured.href ? (
-            <a
-              href={featured.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative grid overflow-hidden rounded-3xl border border-accent/40 bg-accent/10 shadow-[0_0_60px_rgba(225,6,0,0.12)] transition hover:border-accent hover:bg-accent/20 sm:grid-cols-[220px_1fr]"
-            >
-              <div className="pointer-events-none absolute -right-8 -top-10 size-44 rounded-full bg-accent/25 blur-3xl transition group-hover:bg-accent/40" />
-              <div className="relative aspect-[16/9] bg-black sm:aspect-auto sm:min-h-[13rem]">
-                <PlaylistCover
-                  playlist={featured}
-                  sizes="(max-width: 640px) 100vw, 220px"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent sm:bg-gradient-to-r sm:from-transparent sm:via-transparent sm:to-black/20" />
-              </div>
-              <div className="relative flex flex-col justify-between px-5 py-5 sm:px-8 sm:py-8">
-                <div>
-                  <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-accent">
-                    {featured.genre}
-                  </p>
-                  <h3 className="mt-2 font-display text-[2rem] leading-none tracking-wide text-white sm:text-5xl">
-                    {featured.name}
-                  </h3>
-                  <p className="mt-2 max-w-lg text-sm leading-6 text-white/60 sm:text-[15px]">
-                    {featured.description}
-                  </p>
-                </div>
-                <span className="relative mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-accent px-5 text-sm font-semibold text-white shadow-[0_0_24px_rgba(225,6,0,0.4)] transition group-hover:bg-[#ff1a12] sm:mt-6 sm:w-fit">
-                  <PlayIcon className="h-4 w-4 shrink-0" />
-                  Ouvir no YouTube
-                </span>
-              </div>
-            </a>
-          ) : null
-        ) : null}
+      {featured?.href ? (
+        <a
+          href={featured.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group relative mx-4 grid overflow-hidden bg-black ring-1 ring-white/10 transition duration-300 hover:ring-accent/60 sm:mx-5 sm:grid-cols-[minmax(12rem,28%)_minmax(0,1fr)] md:mx-6"
+        >
+          <div className="relative aspect-[16/10] sm:aspect-auto sm:min-h-[14rem]">
+            <PlaylistCover
+              playlist={featured}
+              sizes="(max-width: 640px) 100vw, 32vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent sm:bg-gradient-to-r sm:from-transparent sm:via-black/10 sm:to-black/70" />
+          </div>
 
-        <ul className="mt-3 grid gap-3 sm:mt-4 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+          <div className="relative flex flex-col justify-center gap-4 px-5 py-6 sm:px-8 sm:py-8 md:px-10">
+            <div>
+              <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-accent">
+                {featured.genre}
+              </p>
+              <h3 className="mt-2 font-display text-[2.35rem] leading-[0.92] tracking-wide text-white sm:text-5xl md:text-6xl">
+                {featured.name}
+              </h3>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-white/55 sm:text-[15px] sm:leading-7">
+                {featured.description}
+              </p>
+            </div>
+            <span className="inline-flex min-h-11 w-full items-center justify-center gap-2 bg-accent px-5 text-sm font-semibold text-white transition group-hover:bg-[#ff1a12] sm:w-fit">
+              <PlayIcon className="h-4 w-4 shrink-0" />
+              Ouvir no YouTube
+            </span>
+          </div>
+        </a>
+      ) : null}
+
+      <div className="mt-10 sm:mt-14">
+        <div className="mb-4 flex items-end justify-between gap-4 px-4 sm:mb-5 sm:px-5 md:px-6">
+          <h3 className="text-xs font-medium uppercase tracking-[0.42em] text-accent sm:text-[0.8125rem] sm:tracking-[0.48em]">
+            Por gênero
+          </h3>
+          <p className="text-[11px] uppercase tracking-[0.22em] text-white/35">
+            {genres.length} {genres.length === 1 ? "lista" : "listas"}
+          </p>
+        </div>
+
+        <ul className="row-scroller flex gap-2 overflow-x-auto overscroll-x-contain px-4 pb-1 sm:gap-3 sm:px-5 md:gap-3.5 md:px-6">
           {genres.map((playlist) => (
-            <li key={playlist.id}>
-              <GenrePlaylistCard playlist={playlist} />
+            <li
+              key={playlist.id}
+              className="w-[42vw] max-w-[11.5rem] shrink-0 min-[420px]:w-[38vw] sm:max-w-none sm:w-[30vw] md:w-[22vw] lg:w-[18vw] xl:w-[15vw]"
+            >
+              <GenrePlaylistTile playlist={playlist} />
             </li>
           ))}
         </ul>
