@@ -67,11 +67,33 @@ export function ReleaseSchedule({ onSelect }: ReleaseScheduleProps) {
     setStatuses(getAgendaStatuses());
   }, []);
 
-  // Newest first for the grid; schedule/status helpers stay chronological.
+  // Upcoming nearest-first (so "Próxima" leads), then released newest-first.
+  const statusRank: Record<AgendaStatus, number> = {
+    next: 0,
+    soon: 1,
+    available: 2,
+    tba: 3,
+  };
+
   const visible = schedule
     .filter((track) => genreFilter === "all" || track.genre === genreFilter)
     .slice()
-    .reverse();
+    .sort((a, b) => {
+      const aStatus = statuses.get(a.id) ?? "tba";
+      const bStatus = statuses.get(b.id) ?? "tba";
+      const byStatus = statusRank[aStatus] - statusRank[bStatus];
+      if (byStatus !== 0) return byStatus;
+
+      if (!a.releaseDate && !b.releaseDate) return 0;
+      if (!a.releaseDate) return 1;
+      if (!b.releaseDate) return -1;
+
+      if (aStatus === "available") {
+        return b.releaseDate.localeCompare(a.releaseDate);
+      }
+
+      return a.releaseDate.localeCompare(b.releaseDate);
+    });
 
   const mobileNeedsToggle = visible.length > MOBILE_PREVIEW_COUNT;
 

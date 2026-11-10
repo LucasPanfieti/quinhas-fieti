@@ -188,6 +188,8 @@ export function SmartLinkModal({
 
     function onKey(event: KeyboardEvent) {
       if (event.key === "Escape") {
+        // Search sits above this modal — let it own Esc while open.
+        if (document.querySelector('[data-overlay="search"]')) return;
         onCloseRef.current();
         return;
       }

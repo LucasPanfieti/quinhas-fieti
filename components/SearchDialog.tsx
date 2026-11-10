@@ -25,15 +25,28 @@ type SearchDialogProps = {
   onSelect: (track: Track) => void;
 };
 
+function getFocusableElements(container: HTMLElement) {
+  return [
+    ...container.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  ].filter((element) => !element.hasAttribute("disabled"));
+}
+
 export function SearchDialog({ open, onClose, onSelect }: SearchDialogProps) {
   const inputId = useId();
   const listId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
   const [mounted, setMounted] = useState(false);
   const deferredQuery = useDeferredValue(query);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   const results = useMemo(
     () => searchTracks(deferredQuery, 10),
@@ -69,8 +82,31 @@ export function SearchDialog({ open, onClose, onSelect }: SearchDialogProps) {
 
     function onKey(event: KeyboardEvent) {
       if (event.key === "Escape") {
+        // Capture + stop so lower overlays (smart-link modal) stay open.
         event.preventDefault();
-        onClose();
+        event.stopImmediatePropagation();
+        onCloseRef.current();
+        return;
+      }
+
+      if (event.key === "Tab" && panelRef.current) {
+        const focusable = getFocusableElements(panelRef.current);
+        if (focusable.length === 0) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        const active = document.activeElement;
+
+        if (event.shiftKey && (active === first || !panelRef.current.contains(active))) {
+          event.preventDefault();
+          last.focus();
+          return;
+        }
+        if (!event.shiftKey && (active === last || !panelRef.current.contains(active))) {
+          event.preventDefault();
+          first.focus();
+          return;
+        }
         return;
       }
 
@@ -100,9 +136,9 @@ export function SearchDialog({ open, onClose, onSelect }: SearchDialogProps) {
       }
     }
 
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose, onSelect, results, activeIndex]);
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [open, onSelect, results, activeIndex]);
 
   useEffect(() => {
     setMounted(true);
@@ -111,7 +147,10 @@ export function SearchDialog({ open, onClose, onSelect }: SearchDialogProps) {
   if (!open || !mounted) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[60] flex items-start justify-center px-3 pt-[max(4.5rem,calc(env(safe-area-inset-top)+3.5rem))] sm:px-6 sm:pt-[min(18vh,7.5rem)]">
+    <div
+      data-overlay="search"
+      className="fixed inset-0 z-[60] flex items-start justify-center px-3 pt-[max(4.5rem,calc(env(safe-area-inset-top)+3.5rem))] sm:px-6 sm:pt-[min(18vh,7.5rem)]"
+    >
       <button
         type="button"
         tabIndex={-1}
