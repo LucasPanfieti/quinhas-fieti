@@ -67,12 +67,12 @@ export function ReleaseSchedule({ onSelect }: ReleaseScheduleProps) {
     setStatuses(getAgendaStatuses());
   }, []);
 
-  // Upcoming nearest-first (so "Próxima" leads), then released newest-first.
+  // Próxima → em breve → a definir (ainda vem) → já lançadas (mais novas primeiro).
   const statusRank: Record<AgendaStatus, number> = {
     next: 0,
     soon: 1,
-    available: 2,
-    tba: 3,
+    tba: 2,
+    available: 3,
   };
 
   const visible = schedule
