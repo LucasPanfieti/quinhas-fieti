@@ -300,7 +300,6 @@ export const tracks: Track[] = [
     version: "Versão Pagode",
     genre: "pagode",
     cover: "/covers/o-que-e-amar-pagode-v2.webp",
-    releaseDate: "2026-11-11",
     youtubeId: "Er2tc_xVz7M",
     preview: "/previews/o-que-e-amar-pagode.mp3",
     accentColor: "#F07818",
