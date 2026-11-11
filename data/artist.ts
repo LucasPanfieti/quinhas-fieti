@@ -61,7 +61,7 @@ export const artist = {
       genre: "Pagode",
       genreId: "pagode",
       description: "Todas as músicas Pagode de Quinhas Fieti",
-      href: null,
+      href: "https://www.youtube.com/playlist?list=PLfBPAu1uZUI0",
       cover: "/covers/quinhas-pagode-capa-v2.webp",
     },
   ] satisfies Playlist[],
