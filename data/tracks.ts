@@ -290,9 +290,10 @@ export const tracks: Track[] = [
     genre: "pop",
     cover: "/covers/mais-tempo-pop.webp",
     releaseDate: "2026-12-07",
+    youtubeId: "m_q1LoRQgYA",
     preview: "/previews/mais-tempo-pop-version.mp3",
     accentColor: "#50C43C",
-    platforms: emptyPlatforms(),
+    platforms: platforms("m_q1LoRQgYA"),
   },
   {
     id: "o-que-e-amar",
@@ -324,9 +325,10 @@ export const tracks: Track[] = [
     genre: "pagode",
     cover: "/covers/linha-invisivel-pagode.webp",
     releaseDate: "2026-12-21",
+    youtubeId: "5e9J8qls-DA",
     preview: "/previews/linha-invisivel-pagode-version.mp3",
     accentColor: "#F07818",
-    platforms: emptyPlatforms(),
+    platforms: platforms("5e9J8qls-DA"),
   },
   {
     id: "mais-tempo-pagode",
@@ -335,9 +337,10 @@ export const tracks: Track[] = [
     genre: "pagode",
     cover: "/covers/mais-tempo-pagode.webp",
     releaseDate: "2026-12-24",
+    youtubeId: "zjgu89Ihs8g",
     preview: "/previews/mais-tempo-pagode-version.mp3",
     accentColor: "#F07818",
-    platforms: emptyPlatforms(),
+    platforms: platforms("zjgu89Ihs8g"),
   },
 ];
 
