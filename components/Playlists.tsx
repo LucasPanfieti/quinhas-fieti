@@ -1,9 +1,58 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
-import { artist, type Playlist } from "@/data/artist";
-import { PlayIcon, YouTubeIcon } from "@/components/icons";
+import {
+  artist,
+  playlistIsReady,
+  type Playlist,
+} from "@/data/artist";
+import {
+  CloseIcon,
+  PlayIcon,
+  SpotifyIcon,
+  YouTubeIcon,
+} from "@/components/icons";
 
 const featured = artist.playlists.find((playlist) => playlist.featured);
 const genres = artist.playlists.filter((playlist) => !playlist.featured);
+
+type PlaylistLink = {
+  id: "spotify" | "youtube";
+  label: string;
+  href: string;
+  Icon: typeof SpotifyIcon;
+};
+
+function getPlaylistLinks(playlist: Playlist): PlaylistLink[] {
+  const links: PlaylistLink[] = [];
+  if (playlist.spotify) {
+    links.push({
+      id: "spotify",
+      label: "Spotify",
+      href: playlist.spotify,
+      Icon: SpotifyIcon,
+    });
+  }
+  if (playlist.youtube) {
+    links.push({
+      id: "youtube",
+      label: "YouTube",
+      href: playlist.youtube,
+      Icon: YouTubeIcon,
+    });
+  }
+  return links;
+}
+
+function getFocusableElements(container: HTMLElement) {
+  return [
+    ...container.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  ].filter((element) => !element.hasAttribute("disabled"));
+}
 
 function PlaylistCover({
   playlist,
@@ -39,8 +88,159 @@ function PlaylistCover({
   );
 }
 
-function GenrePlaylistTile({ playlist }: { playlist: Playlist }) {
-  const ready = Boolean(playlist.href);
+function PlaylistPicker({
+  playlist,
+  onClose,
+}: {
+  playlist: Playlist;
+  onClose: () => void;
+}) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const links = getPlaylistLinks(playlist);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  useEffect(() => {
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const frame = window.requestAnimationFrame(() => {
+      panelRef.current
+        ?.querySelector<HTMLAnchorElement>("a[href]")
+        ?.focus();
+    });
+
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        // Search sits above this picker — let it own Esc while open.
+        if (document.querySelector('[data-overlay="search"]')) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        onCloseRef.current();
+        return;
+      }
+
+      if (event.key !== "Tab" || !panelRef.current) return;
+
+      const focusable = getFocusableElements(panelRef.current);
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+
+      if (event.shiftKey && (active === first || !panelRef.current.contains(active))) {
+        event.preventDefault();
+        last.focus();
+      } else if (
+        !event.shiftKey &&
+        (active === last || !panelRef.current.contains(active))
+      ) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    window.addEventListener("keydown", onKey, true);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("keydown", onKey, true);
+      document.body.style.overflow = previousOverflow;
+      previousFocusRef.current?.focus();
+    };
+  }, []);
+
+  return createPortal(
+    <div
+      data-overlay="playlist"
+      className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-6"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="playlist-picker-title"
+    >
+      <button
+        type="button"
+        tabIndex={-1}
+        aria-label="Fechar"
+        onClick={onClose}
+        className="absolute inset-0 bg-black/80 backdrop-blur-[2px] animate-fade-in"
+      />
+
+      <div
+        ref={panelRef}
+        className="relative z-10 w-full max-w-md overflow-hidden rounded-t-[1.75rem] border border-white/10 bg-[#0a0a0a] shadow-[0_0_80px_rgba(225,6,0,0.16)] animate-rise-in sm:rounded-3xl"
+      >
+        <div className="mx-auto mt-2.5 h-1 w-10 rounded-full bg-white/25 sm:hidden" />
+
+        <div className="flex items-start gap-3.5 px-5 pb-4 pt-4 sm:px-6 sm:pt-6">
+          <div className="relative size-[4.5rem] shrink-0 overflow-hidden bg-black ring-1 ring-white/15 sm:size-[5.25rem]">
+            <PlaylistCover playlist={playlist} sizes="84px" fit="contain" />
+          </div>
+          <div className="min-w-0 flex-1 pt-0.5">
+            <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-white/45">
+              {playlist.genre}
+            </p>
+            <h3
+              id="playlist-picker-title"
+              className="mt-1 font-display text-[1.65rem] leading-[0.95] tracking-wide text-white sm:text-[1.85rem]"
+            >
+              {playlist.name}
+            </h3>
+            <p className="mt-2 text-sm leading-5 text-white/50">
+              Onde você quer ouvir?
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Fechar"
+            className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/[0.04] text-white/80 transition hover:bg-white/[0.08]"
+          >
+            <CloseIcon className="h-[1.125rem] w-[1.125rem]" />
+          </button>
+        </div>
+
+        <div className="flex flex-col gap-1.5 px-5 pb-6 sm:px-6">
+          <p className="mb-1 text-[10px] font-medium uppercase tracking-[0.28em] text-white/35">
+            Abrir em
+          </p>
+          {links.map(({ id, label, href, Icon }) => (
+            <a
+              key={id}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex min-h-12 items-center gap-3 rounded-xl border border-white/10 bg-white/[0.02] px-3.5 transition hover:border-accent/70 hover:bg-white/[0.05] active:scale-[0.995]"
+            >
+              <Icon className="h-5 w-5 shrink-0 text-white" />
+              <span className="min-w-0 flex-1 truncate text-sm font-medium text-white">
+                {label}
+              </span>
+              <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.18em] text-accent">
+                Ouvir
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
+function GenrePlaylistTile({
+  playlist,
+  onOpen,
+}: {
+  playlist: Playlist;
+  onOpen: (playlist: Playlist) => void;
+}) {
+  const ready = playlistIsReady(playlist);
   const className =
     "group block w-full text-left transition duration-300";
 
@@ -54,8 +254,8 @@ function GenrePlaylistTile({ playlist }: { playlist: Playlist }) {
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-80 transition duration-300 group-hover:opacity-100" />
         <span className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center gap-2 px-3 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/80 sm:px-4 sm:py-3.5">
-          <YouTubeIcon className="h-3.5 w-3.5 shrink-0" />
-          {ready ? "Abrir" : "Em breve"}
+          <PlayIcon className="h-3.5 w-3.5 shrink-0" />
+          {ready ? "Ouvir" : "Em breve"}
         </span>
       </div>
       <div className="mt-2.5 sm:mt-3">
@@ -71,31 +271,37 @@ function GenrePlaylistTile({ playlist }: { playlist: Playlist }) {
 
   if (!ready) {
     return (
-      <div className={`${className} cursor-default opacity-75`} aria-label={`${playlist.name} — em breve`}>
+      <div
+        className={`${className} cursor-default opacity-75`}
+        aria-label={`${playlist.name} — em breve`}
+      >
         {body}
       </div>
     );
   }
 
   return (
-    <a
-      href={playlist.href!}
-      target="_blank"
-      rel="noopener noreferrer"
+    <button
+      type="button"
+      onClick={() => onOpen(playlist)}
       className={className}
+      aria-haspopup="dialog"
+      aria-label={`${playlist.name} — escolher plataforma`}
     >
       {body}
-    </a>
+    </button>
   );
 }
 
 export function Playlists() {
+  const [active, setActive] = useState<Playlist | null>(null);
+
   return (
     <section id="playlists" className="relative border-t border-white/10 py-16 sm:py-28">
       <div className="mb-10 flex flex-col gap-3 px-4 sm:mb-14 sm:flex-row sm:items-end sm:justify-between sm:gap-4 sm:px-5 md:px-6">
         <div>
           <p className="text-[11px] font-medium uppercase tracking-[0.38em] text-accent">
-            YouTube
+            Spotify · YouTube
           </p>
           <h2 className="mt-2 font-display text-4xl tracking-wide text-white sm:text-6xl">
             Playlists
@@ -106,39 +312,42 @@ export function Playlists() {
         </div>
       </div>
 
-      {featured?.href ? (
-        <a
-          href={featured.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group relative mx-4 grid overflow-hidden bg-black ring-1 ring-white/10 transition duration-300 hover:ring-accent/60 sm:mx-5 sm:grid-cols-[minmax(12rem,28%)_minmax(0,1fr)] md:mx-6"
-        >
-          <div className="relative aspect-[16/10] sm:aspect-auto sm:min-h-[14rem]">
-            <PlaylistCover
-              playlist={featured}
-              sizes="(max-width: 640px) 100vw, 32vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent sm:bg-gradient-to-r sm:from-transparent sm:via-black/10 sm:to-black/70" />
-          </div>
-
-          <div className="relative flex flex-col justify-center gap-4 px-5 py-6 sm:px-8 sm:py-8 md:px-10">
-            <div>
-              <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-accent">
-                {featured.genre}
-              </p>
-              <h3 className="mt-2 font-display text-[2.35rem] leading-[0.92] tracking-wide text-white sm:text-5xl md:text-6xl">
-                {featured.name}
-              </h3>
-              <p className="mt-3 max-w-xl text-sm leading-6 text-white/55 sm:text-[15px] sm:leading-7">
-                {featured.description}
-              </p>
+      {featured && playlistIsReady(featured) ? (
+        <div className="px-4 sm:px-5 md:px-6">
+          <button
+            type="button"
+            onClick={() => setActive(featured)}
+            aria-haspopup="dialog"
+            aria-label={`${featured.name} — escolher plataforma`}
+            className="group relative grid w-full overflow-hidden bg-black text-left ring-1 ring-white/10 transition duration-300 hover:ring-accent/60 sm:grid-cols-[minmax(12rem,28%)_minmax(0,1fr)]"
+          >
+            <div className="relative aspect-[16/10] sm:aspect-auto sm:min-h-[14rem]">
+              <PlaylistCover
+                playlist={featured}
+                sizes="(max-width: 640px) 100vw, 32vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent sm:bg-gradient-to-r sm:from-transparent sm:via-black/10 sm:to-black/70" />
             </div>
-            <span className="inline-flex min-h-11 w-full items-center justify-center gap-2 bg-accent px-5 text-sm font-semibold text-white transition group-hover:bg-[#ff1a12] sm:w-fit">
-              <PlayIcon className="h-4 w-4 shrink-0" />
-              Ouvir no YouTube
-            </span>
-          </div>
-        </a>
+
+            <div className="relative flex flex-col justify-center gap-4 px-5 py-6 sm:px-8 sm:py-8 md:px-10">
+              <div>
+                <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-accent">
+                  {featured.genre}
+                </p>
+                <h3 className="mt-2 font-display text-[2.35rem] leading-[0.92] tracking-wide text-white sm:text-5xl md:text-6xl">
+                  {featured.name}
+                </h3>
+                <p className="mt-3 max-w-xl text-sm leading-6 text-white/55 sm:text-[15px] sm:leading-7">
+                  {featured.description}
+                </p>
+              </div>
+              <span className="inline-flex min-h-11 w-full items-center justify-center gap-2 bg-accent px-5 text-sm font-semibold text-white transition group-hover:bg-[#ff1a12] sm:w-fit">
+                <PlayIcon className="h-4 w-4 shrink-0" />
+                Ouvir playlist
+              </span>
+            </div>
+          </button>
+        </div>
       ) : null}
 
       <div className="mt-10 sm:mt-14">
@@ -157,11 +366,18 @@ export function Playlists() {
               key={playlist.id}
               className="w-[42vw] max-w-[11.5rem] shrink-0 min-[420px]:w-[38vw] sm:max-w-none sm:w-[30vw] md:w-[22vw] lg:w-[18vw] xl:w-[15vw]"
             >
-              <GenrePlaylistTile playlist={playlist} />
+              <GenrePlaylistTile
+                playlist={playlist}
+                onOpen={setActive}
+              />
             </li>
           ))}
         </ul>
       </div>
+
+      {active ? (
+        <PlaylistPicker playlist={active} onClose={() => setActive(null)} />
+      ) : null}
     </section>
   );
 }
