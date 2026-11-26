@@ -270,6 +270,9 @@ export const tracks: Track[] = [
       deezer: "https://www.deezer.com/track/4292153002",
       amazonMusic: "https://music.amazon.com.br/tracks/B0HK5Y4D44",
       tidal: "https://tidal.com/track/561949710",
+      tiktok:
+        "https://www.tiktok.com/music/Depois-da-Meia-Noite-7686550443159160833",
+      instagram: "https://www.instagram.com/reels/audio/1538051508007218",
     },
   },
   {
@@ -289,6 +292,8 @@ export const tracks: Track[] = [
       deezer: "https://www.deezer.com/track/4397555421",
       amazonMusic: "https://music.amazon.com.br/albums/B0HQQVH2ZN",
       tidal: "https://tidal.com/track/576776938",
+      tiktok: "https://www.tiktok.com/music/Mais-Tempo-7705202209865500673",
+      instagram: "https://www.instagram.com/reels/audio/1152063013860184",
     },
   },
   {
