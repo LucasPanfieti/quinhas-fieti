@@ -281,7 +281,15 @@ export const tracks: Track[] = [
     youtubeId: "q2kMYpGAizI",
     preview: "/previews/mais-tempo.mp3",
     accentColor: "#50C43C",
-    platforms: platforms("q2kMYpGAizI"),
+    platforms: {
+      ...platforms("q2kMYpGAizI"),
+      spotify: "https://open.spotify.com/track/4YmUNjwwEjDiCWDJATBlKd",
+      appleMusic:
+        "https://music.apple.com/br/album/mais-tempo/6831815332?i=6831815333",
+      deezer: "https://www.deezer.com/track/4397555421",
+      amazonMusic: "https://music.amazon.com.br/albums/B0HQQVH2ZN",
+      tidal: "https://tidal.com/track/576776938",
+    },
   },
   {
     id: "mais-tempo-pop",
